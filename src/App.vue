@@ -1,16 +1,31 @@
 <template>
   <div id="app">
-    <LoginComponent />
+    <h1>Welcome to the Dating App</h1>
+    <router-link to="/register">Register</router-link>
+    <router-view></router-view> <!-- This is where the routed component will be rendered -->
   </div>
 </template>
 
-<script>
-import LoginComponent from './components/LoginComponent.vue';
 
-export default {
-  name: 'App',
-  components: {
-    LoginComponent,
-  },
-};
-</script>
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
+
+nav {
+  padding: 30px;
+}
+
+nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+nav a.router-link-exact-active {
+  color: #42b983;
+}
+</style>
