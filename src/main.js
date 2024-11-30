@@ -1,9 +1,11 @@
+import './assets/styles.css';
 import Vue from 'vue';
 import App from './App.vue';
 import VueApollo from 'vue-apollo';
 import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client/core';
 import router from './router'
-import './assets/styles.css';
+
+import store from './store'
 
 Vue.config.productionTip = false;
 
@@ -27,5 +29,6 @@ Vue.use(VueApollo);
 new Vue({
   render: (h) => h(App),
   router,
+  store,
   apolloProvider
 }).$mount('#app');

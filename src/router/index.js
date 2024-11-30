@@ -1,37 +1,45 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import HomeView from '../views/HomeView.vue';
-import ProfileView from '../views/ProfileView.vue';
+import LayoutComponent from '../components/LayoutComponent.vue'; // Import the layout component
+import RegisterComponent from '../components/RegisterComponent.vue';
 import LoginComponent from '../components/LoginComponent.vue';
-import RegisterComponent from '../components/RegisterComponent.vue';  // Import RegisterComponent
+import ProfileComponent from '../components/ProfileComponent.vue';
+import HomeView from '../views/HomeView.vue';
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView,
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component: LoginComponent,
-  },
-  {
-    path: '/profile',
-    name: 'profile',
-    component: ProfileView,
-  },
-  {
-    path: '/register',  // Add the register route
-    name: 'register',
-    component: RegisterComponent,  // Map it to RegisterComponent
+    component: LayoutComponent,  // Use LayoutComponent to wrap other components
+    children: [
+      {
+        path: '',
+        name: 'home',
+        component: HomeView,  // Replace with your home component or default view
+      },
+      {
+        path: '/profile',
+        name: 'profile',
+        component: ProfileComponent,  // Your Profile Component
+      },
+      {
+        path: '/login',
+        name: 'login',
+        component: LoginComponent,
+      },
+      {
+        path: '/register',
+        name: 'register',
+        component: RegisterComponent,
+      },
+    ],
   },
 ];
 
 const router = new VueRouter({
   routes,
+  mode: 'history',  // To remove the # from the URL
 });
 
 export default router;
