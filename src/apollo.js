@@ -2,14 +2,14 @@ import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client/core
 import { ApolloProvider } from '@vue/apollo-option';
 
 const httpLink = createHttpLink({
-    uri: 'http://localhost:3000/graphql', // Ensure this points to your backend GraphQL endpoint
+    uri: 'http://localhost:3000/graphql',
+    credentials: 'include', // This sends cookies with the request
 });
-
 const cache = new InMemoryCache();
 
 const apolloClient = new ApolloClient({
     link: httpLink,
-    cache,
+    cache: new InMemoryCache(),
 });
 
 export const apolloProvider = new ApolloProvider({

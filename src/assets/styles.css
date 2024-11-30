@@ -94,3 +94,13 @@ ul {
 li {
     margin: 5px 0;
 }
+
+input::placeholder,
+textarea::placeholder {
+    color: #a1a1a1;
+}
+
+input:focus::placeholder,
+textarea:focus::placeholder {
+    color: #d6517c;
+}

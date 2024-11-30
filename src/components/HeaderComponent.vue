@@ -50,9 +50,4 @@ nav ul li a {
 nav ul li a:hover {
     color: #D1114D;
 }
-
-/* Add padding to the body to prevent overlap with fixed header */
-body {
-    padding-top: 50px;
-}
 </style>

@@ -27,16 +27,16 @@ export default {
     methods: {
         async loginUser() {
             const LOGIN_USER_MUTATION = gql`
-                  mutation LoginUser($input: LoginUserInput!) {
-                      loginUser(input: $input) {
-                          user {
-                              id
-                              email
-                          }
-                          errors
-                      }
-                  }
-              `;
+  mutation LoginUser($input: LoginUserInput!) {
+    loginUser(input: $input) {
+      user {
+        id
+        email
+      }
+      errors
+    }
+  }
+`;
 
             try {
                 const response = await this.$apollo.mutate({
@@ -61,8 +61,14 @@ export default {
                     // Emit success message using EventBus
                     EventBus.$emit('message', {
                         type: 'success',
-                        text: 'Login successful!',  // Success message
+                        text: 'Login successful! Ready to find your match? Let’s get started! 💖',  // Success message
                     });
+
+                    // Store user data in Vuex
+                    this.$store.dispatch('setUser', loginUser.user);
+
+                    // Redirect to profile page
+                    this.$router.push({ name: 'profile' });
 
                     // Optionally reset form fields
                     this.email = '';
@@ -80,10 +86,6 @@ export default {
     },
 };
 </script>
-
-<style scoped>
-/* Style as needed */
-</style>
 
 <style scoped>
 .login-container {

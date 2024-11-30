@@ -2,66 +2,84 @@
   <div class="register-container">
     <h2>Register</h2>
     <form @submit.prevent="registerUser" class="register-form">
-      <!-- Form fields -->
-      <div class="form-group">
-        <input v-model="firstName" placeholder="First Name" required />
+      <!-- Left Column -->
+      <div class="form-column">
+        <div class="form-group">
+          <input v-model="firstName" placeholder="First Name" required />
+        </div>
+        <div class="form-group">
+          <input v-model="lastName" placeholder="Last Name" required />
+        </div>
+        <div class="form-group">
+          <input v-model="email" type="email" placeholder="Email" required />
+        </div>
+        <div class="form-group">
+          <input v-model="password" type="password" placeholder="Password" required />
+        </div>
+        <div class="form-group">
+          <input v-model="passwordConfirmation" type="password" placeholder="Confirm Password" required />
+        </div>
+        <div class="form-group">
+          <input v-model="mobileNumber" placeholder="Mobile Number" />
+        </div>
+        <button type="submit" class="register-btn">Register</button>
       </div>
-      <div class="form-group">
-        <input v-model="lastName" placeholder="Last Name" required />
+
+      <!-- Right Column -->
+      <div class="form-column">
+        <div class="form-group">
+          <h3>Birthdate:</h3>
+          <input v-model="birthdate" type="date" required />
+        </div>
+        <div class="form-group">
+          <h3>Gender:</h3>
+
+          <select v-model="gender" required>
+            <option value="" disabled selected>Select Gender</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Non-binary</option>
+            <option>Other</option>
+          </select>
+          <input v-if="gender === 'Other'" v-model="customGender" placeholder="Custom Gender" />
+        </div>
+        <div class="form-group">
+          <h3>Sexual Orientation:</h3>
+
+          <select v-model="sexualOrientation" required>
+            <option value="" disabled selected>Select Sexual Orientation</option>
+            <option>Heterosexual</option>
+            <option>Homosexual</option>
+            <option>Bisexual</option>
+            <option>Asexual</option>
+            <option>Other</option>
+          </select>
+          <input v-if="sexualOrientation === 'Other'" v-model="customSexualOrientation"
+            placeholder="Custom Sexual Orientation" />
+        </div>
+        <div class="form-group">
+          <h3>Gender Preference:</h3>
+          <select v-model="genderInterest" required>
+            <option value="" disabled selected>Select Gender Interest</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Non-binary</option>
+            <option>Any</option>
+            <option>Other</option>
+          </select>
+          <input v-if="genderInterest === 'Other'" v-model="customGenderInterest"
+            placeholder="Custom Gender Interest" />
+        </div>
+        <div class="form-group">
+          <input v-model="location" placeholder="Location (e.g., City, Region, Country)" required />
+        </div>
+        <div class="form-group">
+          <textarea v-model="bio" placeholder="Bio"></textarea>
+        </div>
       </div>
-      <div class="form-group">
-        <input v-model="email" type="email" placeholder="Email" required />
-      </div>
-      <div class="form-group">
-        <input v-model="password" type="password" placeholder="Password" required />
-      </div>
-      <div class="form-group">
-        <input v-model="mobileNumber" placeholder="Mobile Number" />
-      </div>
-      <div class="form-group">
-        <h3>Birthdate:</h3>
-        <input v-model="birthdate" type="date" required />
-      </div>
-      <div class="form-group">
-        <select v-model="gender" required>
-          <option disabled value="">Select Gender</option>
-          <option>Male</option>
-          <option>Female</option>
-          <option>Non-binary</option>
-          <option>Other</option>
-        </select>
-        <input v-if="gender === 'Other'" v-model="customGender" placeholder="Custom Gender" />
-      </div>
-      <div class="form-group">
-        <select v-model="sexualOrientation" required>
-          <option disabled value="">Select Sexual Orientation</option>
-          <option>Heterosexual</option>
-          <option>Homosexual</option>
-          <option>Bisexual</option>
-          <option>Asexual</option>
-          <option>Other</option>
-        </select>
-        <input v-if="sexualOrientation === 'Other'" v-model="customSexualOrientation"
-          placeholder="Custom Sexual Orientation" />
-      </div>
-      <div class="form-group">
-        <select v-model="genderInterest" required>
-          <option disabled value="">Select Gender Interest</option>
-          <option>Male</option>
-          <option>Female</option>
-          <option>Non-binary</option>
-          <option>Any</option>
-          <option>Other</option>
-        </select>
-        <input v-if="genderInterest === 'Other'" v-model="customGenderInterest" placeholder="Custom Gender Interest" />
-      </div>
-      <div class="form-group">
-        <input v-model="location" placeholder="Location (e.g., City, Region, Country)" required />
-      </div>
-      <div class="form-group">
-        <textarea v-model="bio" placeholder="Bio"></textarea>
-      </div>
-      <button type="submit" class="register-btn">Register</button>
+
+      <input type="hidden" :value="authenticityToken" name="authenticity_token" />
+
     </form>
   </div>
 </template>
@@ -77,6 +95,7 @@ export default {
       lastName: '',
       email: '',
       password: '',
+      passwordConfirmation: '',
       mobileNumber: '',
       birthdate: '',
       gender: '',
@@ -87,22 +106,24 @@ export default {
       customGender: '',
       customSexualOrientation: '',
       customGenderInterest: '',
+      authenticityToken: document.querySelector('meta[name="csrf-token"]').getAttribute('content'), // Authenticity token
     };
   },
   methods: {
     async registerUser() {
       const REGISTER_USER_MUTATION = gql`
         mutation RegisterUser(
-          $firstName: String!,
-          $lastName: String!,
-          $email: String!,
-          $password: String!,
-          $mobileNumber: String,
-          $birthdate: String,
-          $gender: String,
-          $sexualOrientation: String,
-          $genderInterest: String,
-          $location: String,
+          $firstName: String! 
+          $lastName: String! 
+          $email: String! 
+          $password: String! 
+          $passwordConfirmation: String! 
+          $mobileNumber: String 
+          $birthdate: String 
+          $gender: String 
+          $sexualOrientation: String 
+          $genderInterest: String 
+          $location: String 
           $bio: String
         ) {
           registerUser(
@@ -111,6 +132,7 @@ export default {
               lastName: $lastName,
               email: $email,
               password: $password,
+              passwordConfirmation: $passwordConfirmation,
               mobileNumber: $mobileNumber,
               birthdate: $birthdate,
               gender: $gender,
@@ -146,6 +168,7 @@ export default {
             lastName: this.lastName,
             email: this.email,
             password: this.password,
+            passwordConfirmation: this.passwordConfirmation,
             mobileNumber: this.mobileNumber,
             birthdate: this.birthdate,
             gender: this.gender === 'Other' ? this.customGender : this.gender,
@@ -179,13 +202,12 @@ export default {
     },
   },
 };
-
 </script>
 
 
 <style scoped>
 .register-container {
-  max-width: 600px;
+  max-width: 900px;
   margin: 50px auto;
   padding: 25px;
   background-color: #F7D6D0;
@@ -195,17 +217,24 @@ export default {
 }
 
 h2 {
-
   font-size: 1.8rem;
+  margin-bottom: 20px;
 }
 
 h3 {
   text-align: left;
   color: #821d30;
-  margin-bottom: 8px;
+  margin-bottom: 0;
 }
 
 .register-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  grid-auto-rows: minmax(100px, auto);
+}
+
+.form-column {
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -219,30 +248,39 @@ h3 {
 input,
 textarea,
 select {
-  padding: 10px;
+  padding: 12px;
   border: 2px solid #f38592;
   border-radius: 5px;
   outline: none;
   font-size: 1rem;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 input:focus,
 textarea:focus,
 select:focus {
   border-color: #d6517c;
+  box-shadow: 0 0 5px rgba(214, 81, 124, 0.5);
 }
 
 textarea {
-  min-height: 60px;
+  min-height: 80px;
   resize: vertical;
+}
+
+select {
+  background-color: #fff;
+}
+
+select option {
+  color: #821d30;
 }
 
 .register-btn {
   padding: 12px;
   background-color: #821d30;
   color: #ffffff;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: bold;
   border: none;
   border-radius: 5px;
@@ -252,5 +290,13 @@ textarea {
 
 .register-btn:hover {
   background-color: #d6517c;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .register-form {
+    grid-template-columns: 1fr;
+    /* Stack columns on smaller screens */
+  }
 }
 </style>
