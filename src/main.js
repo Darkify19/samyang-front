@@ -1,4 +1,5 @@
 import './assets/styles.css';
+import defaultPlaceholder from '@/assets/default_placeholder.png';
 import Vue from 'vue';
 import App from './App.vue';
 import VueApollo from 'vue-apollo';
@@ -7,6 +8,9 @@ import router from './router';
 import { store } from './store';  // Make sure this is imported
 
 Vue.config.productionTip = false;
+Vue.prototype.$defaultPlaceholder = defaultPlaceholder;
+
+store.dispatch('initializeStore'); // Initialize store on app startup
 
 const httpLink = new HttpLink({
   uri: 'http://localhost:3000/graphql', // Your GraphQL endpoint

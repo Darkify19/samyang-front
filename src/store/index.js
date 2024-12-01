@@ -5,35 +5,46 @@ Vue.use(Vuex);
 
 export const store = new Vuex.Store({
   state: {
-    isAuthenticated: false, // User authentication status
-    user: null, // Stores user data
+    isAuthenticated: false,  // User authentication status
+    user: null,  // Stores user data
   },
   mutations: {
-    // Set user data when login is successful
     setUser(state, userData) {
       state.isAuthenticated = true;
       state.user = userData;
+
+      // Save to localStorage
+      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('isAuthenticated', 'true');
     },
-    // Clear user data when logout happens
     logout(state) {
       state.isAuthenticated = false;
       state.user = null;
+
+      // Remove from localStorage
+      localStorage.removeItem('user');
+      localStorage.removeItem('isAuthenticated');
     },
   },
   actions: {
-    // Action to set the user after successful login
-    // Directly commits the mutation
     setUser({ commit }, userData) {
       commit('setUser', userData);
     },
-    // Action to log the user out
     logout({ commit }) {
       commit('logout');
     },
+    initializeStore({ commit }) {
+      const user = JSON.parse(localStorage.getItem('user'));
+      const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+
+      if (user && isAuthenticated) {
+        commit('setUser', user);
+      }
+    },
   },
   getters: {
-    // Getters to access user data and auth status
     isAuthenticated: (state) => state.isAuthenticated,
     getUser: (state) => state.user,
+    getUserId: (state) => (state.user ? state.user.id : null),
   },
 });

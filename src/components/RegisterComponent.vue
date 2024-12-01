@@ -33,7 +33,6 @@
         </div>
         <div class="form-group">
           <h3>Gender:</h3>
-
           <select v-model="gender" required>
             <option value="" disabled selected>Select Gender</option>
             <option>Male</option>
@@ -41,11 +40,9 @@
             <option>Non-binary</option>
             <option>Other</option>
           </select>
-          <input v-if="gender === 'Other'" v-model="customGender" placeholder="Custom Gender" />
         </div>
         <div class="form-group">
           <h3>Sexual Orientation:</h3>
-
           <select v-model="sexualOrientation" required>
             <option value="" disabled selected>Select Sexual Orientation</option>
             <option>Heterosexual</option>
@@ -54,8 +51,6 @@
             <option>Asexual</option>
             <option>Other</option>
           </select>
-          <input v-if="sexualOrientation === 'Other'" v-model="customSexualOrientation"
-            placeholder="Custom Sexual Orientation" />
         </div>
         <div class="form-group">
           <h3>Gender Preference:</h3>
@@ -65,10 +60,7 @@
             <option>Female</option>
             <option>Non-binary</option>
             <option>Any</option>
-            <option>Other</option>
           </select>
-          <input v-if="genderInterest === 'Other'" v-model="customGenderInterest"
-            placeholder="Custom Gender Interest" />
         </div>
         <div class="form-group">
           <input v-model="location" placeholder="Location (e.g., City, Region, Country)" required />
@@ -79,10 +71,10 @@
       </div>
 
       <input type="hidden" :value="authenticityToken" name="authenticity_token" />
-
     </form>
   </div>
 </template>
+
 
 <script>
 import { gql } from '@apollo/client/core';
@@ -208,8 +200,8 @@ export default {
 <style scoped>
 .register-container {
   max-width: 900px;
-  margin: 50px auto;
-  padding: 25px;
+  margin: 7px auto;
+  padding: 20px;
   background-color: #F7D6D0;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -225,6 +217,7 @@ h3 {
   text-align: left;
   color: #821d30;
   margin-bottom: 0;
+  margin-top: 0;
 }
 
 .register-form {
@@ -245,35 +238,9 @@ h3 {
   flex-direction: column;
 }
 
-input,
-textarea,
-select {
-  padding: 12px;
-  border: 2px solid #f38592;
-  border-radius: 5px;
-  outline: none;
-  font-size: 1rem;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-input:focus,
-textarea:focus,
-select:focus {
-  border-color: #d6517c;
-  box-shadow: 0 0 5px rgba(214, 81, 124, 0.5);
-}
-
 textarea {
   min-height: 80px;
   resize: vertical;
-}
-
-select {
-  background-color: #fff;
-}
-
-select option {
-  color: #821d30;
 }
 
 .register-btn {

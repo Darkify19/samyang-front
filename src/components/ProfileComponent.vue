@@ -1,144 +1,234 @@
 <template>
-    <div class="profile-container">
+    <div class="profile-container container">
         <h2>User Profile</h2>
 
         <div class="user-info" v-if="user">
-            <img :src="user.profilePicture" alt="Profile Picture" class="profile-picture" />
+            <img :src="user.photos && user.photos.length ? user.photos[0] : $defaultPlaceholder" alt="Profile Picture"
+                class="profile-picture" />
+
+            <p v-if="!user.photos || !user.photos.length">You have not yet uploaded any photos. Please upload.</p>
+
             <div class="user-details">
-                <p><strong>Name:</strong> {{ user.firstName }} {{ user.lastName }}</p>
-                <p><strong>Email:</strong> {{ user.email }}</p>
-                <p><strong>Location:</strong> {{ user.location }}</p>
-                <p><strong>Bio:</strong> {{ user.bio }}</p>
-            </div>
-        </div>
-
-        <button @click="editProfile">Edit Profile</button>
-
-        <div class="inbox">
-            <h3>Inbox</h3>
-            <ul>
-                <li v-for="contact in contacts" :key="contact.id">
-                    <div class="contact-item">
-                        <img :src="contact.profilePicture" alt="Contact Photo" class="contact-photo" />
-                        <div class="contact-details">
-                            <p><strong>{{ contact.firstName }} {{ contact.lastName }}</strong></p>
-                            <p>{{ contact.lastMessageExcerpt }}</p>
-                        </div>
+                <form @submit.prevent="updateProfile" class="form-group two-columns">
+                    <div>
+                        <label for="firstName">First Name:</label>
+                        <input id="firstName" v-model="userDetails.firstName" type="text"
+                            placeholder="Enter your first name" />
                     </div>
-                </li>
-            </ul>
+                    <div>
+                        <label for="lastName">Last Name:</label>
+                        <input id="lastName" v-model="userDetails.lastName" type="text"
+                            placeholder="Enter your last name" />
+                    </div>
+                    <div>
+                        <label for="email">Email:</label>
+                        <input id="email" v-model="userDetails.email" type="email" placeholder="Enter your email" />
+                    </div>
+                    <div>
+                        <label for="mobileNumber">Mobile Number:</label>
+                        <input id="mobileNumber" v-model="userDetails.mobileNumber" type="text"
+                            placeholder="Enter your mobile number" />
+                    </div>
+                    <div>
+                        <label for="birthdate">Birthdate:</label>
+                        <input id="birthdate" v-model="userDetails.birthdate" type="date" />
+                    </div>
+                    <div>
+                        <label for="gender">Gender:</label>
+                        <select v-model="userDetails.gender" required>
+                            <option value="" disabled selected>Select Gender</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                            <option>Non-binary</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="sexualOrientation">Sexual Orientation:</label>
+                        <select v-model="userDetails.sexualOrientation" required>
+                            <option value="" disabled selected>Select Sexual Orientation</option>
+                            <option>Heterosexual</option>
+                            <option>Homosexual</option>
+                            <option>Bisexual</option>
+                            <option>Asexual</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="genderInterest">Gender Interest:</label>
+                        <select v-model="userDetails.genderInterest" required>
+                            <option value="" disabled selected>Select Gender Interest</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                            <option>Non-binary</option>
+                            <option>Any</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="location">Location:</label>
+                        <input id="location" v-model="userDetails.location" type="text"
+                            placeholder="Enter your location" />
+                    </div>
+                    <div>
+                        <label for="bio">Bio:</label>
+                        <textarea id="bio" v-model="userDetails.bio" placeholder="Tell us about yourself"></textarea>
+                    </div>
+                    <button type="submit">Save Changes</button>
+                </form>
+            </div>
         </div>
     </div>
 </template>
 
+
 <script>
-import { gql } from '@apollo/client/core'; // Correct import for gql
+import { gql } from '@apollo/client/core';
+import { EventBus } from '@/eventBus';
 
 export default {
     data() {
         return {
-            contacts: [
-                { id: 1, firstName: 'John', lastName: 'Doe', profilePicture: 'path_to_contact_image', lastMessageExcerpt: 'Hello there!' },
-                { id: 2, firstName: 'Jane', lastName: 'Smith', profilePicture: 'path_to_contact_image', lastMessageExcerpt: 'How are you?' },
-            ],
+            userDetails: {
+                firstName: '',
+                lastName: '',
+                email: '',
+                mobileNumber: '',
+                birthdate: '',
+                gender: '',
+                sexualOrientation: '',
+                genderInterest: '',
+                location: '',
+                bio: '',
+            },
+            customGender: '',
+            customSexualOrientation: '',
+            customGenderInterest: '',
         };
     },
     computed: {
-        // Get the user from Vuex store
         user() {
-            return this.$store && this.$store.getters ? this.$store.getters.getUser : null;
+            return this.$store.getters.getUser;
         },
     },
-    mounted() {
-        if (!this.user) {
-            this.fetchUserProfile();
-        }
+    watch: {
+        user: {
+            immediate: true,
+            handler(newValue) {
+                if (newValue) {
+                    this.userDetails = { ...newValue };
+                }
+            },
+        },
     },
     methods: {
-        async fetchUserProfile() {
-            // Make sure the user has an ID (get the ID from a Vuex getter or route params)
-            const userId = this.$store.getters.getUserId;  // Assuming you have the user's ID in Vuex
-
-            const GET_USER_PROFILE = gql`
-                query GetUserProfile($id: ID!) {
-                    user(id: $id) {
-                        id
-                        firstName
-                        lastName
-                        email
-                        location
-                        bio
-                        profilePicture
+        async updateProfile() {
+            const UPDATE_USER_MUTATION = gql`
+                mutation UpdateUser($input: UpdateUserInput!) {
+                    updateUser(input: $input) {
+                        user {
+                            id
+                            firstName
+                            lastName
+                            email
+                            mobileNumber
+                            birthdate
+                            gender
+                            sexualOrientation
+                            genderInterest
+                            location
+                            bio
+                        }
+                        errors
                     }
                 }
             `;
 
+            const input = {
+                id: this.$store.getters.getUserId,
+                firstName: this.userDetails.firstName,
+                lastName: this.userDetails.lastName,
+                email: this.userDetails.email,
+                mobileNumber: this.userDetails.mobileNumber,
+                birthdate: this.userDetails.birthdate,
+                gender: this.userDetails.gender,
+                sexualOrientation: this.userDetails.sexualOrientation,
+                genderInterest: this.userDetails.genderInterest,
+                location: this.userDetails.location,
+                bio: this.userDetails.bio,
+            };
+
             try {
-                const response = await this.$apollo.query({
-                    query: GET_USER_PROFILE,
-                    variables: { id: userId }, // Pass the user ID as a variable
+                const response = await this.$apollo.mutate({
+                    mutation: UPDATE_USER_MUTATION,
+                    variables: { input }, // Pass input as a single object
                 });
 
-                const user = response.data.user;
-                this.$store.dispatch('setUser', user); // Store user data in Vuex
+                const { updateUser } = response.data;
+
+                if (updateUser.errors.length > 0) {
+                    EventBus.$emit('message', {
+                        type: 'error',
+                        text: updateUser.errors.join(', '),
+                    });
+                } else {
+                    this.$store.dispatch('setUser', updateUser.user);
+                    EventBus.$emit('message', {
+                        type: 'success',
+                        text: 'Profile updated successfully!',
+                    });
+                }
             } catch (error) {
-                console.error('Error fetching user profile:', error);
+                console.error('Error updating profile:', error);
+                EventBus.$emit('message', {
+                    type: 'error',
+                    text: 'An unexpected error occurred.',
+                });
             }
-        },
-        editProfile() {
-            console.log('Edit profile clicked');
         },
     },
 };
 </script>
 
 
+
 <style scoped>
 .profile-container {
-    padding: 20px;
+    padding: 30px;
     max-width: 800px;
-    margin: 0 auto;
+    margin: 20px auto;
+    background-color: #f7d6d0;
 }
 
 .user-info {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    margin-bottom: 20px;
+    text-align: left;
+    gap: 20px;
 }
 
 .profile-picture {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
-    margin-right: 20px;
+    border: 3px solid #821d30;
 }
 
-.user-details p {
-    margin: 5px 0;
+.form-group.two-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
 }
 
-.inbox {
-    margin-top: 40px;
+.form-group label {
+    font-weight: bold;
+    color: #821d30;
+    text-align: left;
 }
 
-.inbox h3 {
-    margin-bottom: 20px;
-}
-
-.contact-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.contact-photo {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    margin-right: 15px;
-}
-
-.contact-details p {
-    margin: 0;
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
 }
 </style>

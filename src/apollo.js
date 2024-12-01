@@ -3,13 +3,14 @@ import { ApolloProvider } from '@vue/apollo-option';
 
 const httpLink = createHttpLink({
     uri: 'http://localhost:3000/graphql',
-    credentials: 'include', // This sends cookies with the request
+    credentials: 'same-origin', // This sends cookies with the request
 });
+
 const cache = new InMemoryCache();
 
 const apolloClient = new ApolloClient({
     link: httpLink,
-    cache: new InMemoryCache(),
+    cache, // Reusing the cache instance here
 });
 
 export const apolloProvider = new ApolloProvider({

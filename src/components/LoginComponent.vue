@@ -28,14 +28,24 @@ export default {
         async loginUser() {
             const LOGIN_USER_MUTATION = gql`
   mutation LoginUser($input: LoginUserInput!) {
-    loginUser(input: $input) {
-      user {
-        id
-        email
-      }
-      errors
+  loginUser(input: $input) {
+    user {
+      id
+      email
+      firstName
+      lastName
+      mobileNumber
+      birthdate
+      gender
+      sexualOrientation
+      genderInterest
+      location
+      bio
+      photos
     }
+    errors
   }
+}
 `;
 
             try {
@@ -112,19 +122,6 @@ h2 {
 .form-group {
     display: flex;
     flex-direction: column;
-}
-
-input {
-    padding: 10px;
-    border: 2px solid #f38592;
-    border-radius: 5px;
-    outline: none;
-    font-size: 1rem;
-    transition: border-color 0.3s ease;
-}
-
-input:focus {
-    border-color: #d6517c;
 }
 
 .login-btn {
