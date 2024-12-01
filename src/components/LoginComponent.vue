@@ -8,7 +8,10 @@
             <div class="form-group">
                 <input v-model="password" type="password" placeholder="Password" required />
             </div>
-            <button type="submit" class="login-btn">Login</button>
+            <button :disabled="loading" type="submit" class="login-btn">
+                <span v-if="loading">Logging in...</span>
+                <span v-else>Login</span>
+            </button>
         </form>
     </div>
 </template>
@@ -22,31 +25,45 @@ export default {
         return {
             email: '',
             password: '',
+            loading: false, // Add loading state
         };
     },
     methods: {
         async loginUser() {
             const LOGIN_USER_MUTATION = gql`
-  mutation LoginUser($input: LoginUserInput!) {
-  loginUser(input: $input) {
-    user {
-      id
-      email
-      firstName
-      lastName
-      mobileNumber
-      birthdate
-      gender
-      sexualOrientation
-      genderInterest
-      location
-      bio
-      photos
-    }
-    errors
-  }
-}
-`;
+                mutation LoginUser($input: LoginUserInput!) {
+                    loginUser(input: $input) {
+                        user {
+                            id
+                            email
+                            firstName
+                            lastName
+                            mobileNumber
+                            birthdate
+                            gender
+                            sexualOrientation
+                            genderInterest
+                            location
+                            bio
+                            photos {
+                                id
+                                url
+                            }
+                        }
+                        errors
+                    }
+                }
+            `;
+
+            if (!this.email || !this.password) {
+                EventBus.$emit('message', {
+                    type: 'error',
+                    text: 'Please fill out all fields.',
+                });
+                return;
+            }
+
+            this.loading = true;
 
             try {
                 const response = await this.$apollo.mutate({
@@ -61,23 +78,18 @@ export default {
 
                 const { loginUser } = response.data;
 
-                if (loginUser.errors.length > 0) {
-                    // Emit error messages using EventBus
+                if (loginUser.errors && loginUser.errors.length > 0) {
                     EventBus.$emit('message', {
                         type: 'error',
                         text: loginUser.errors.join(', '),  // Join multiple errors
                     });
                 } else {
-                    // Emit success message using EventBus
                     EventBus.$emit('message', {
                         type: 'success',
-                        text: 'Login successful! Ready to find your match? Let’s get started! 💖',  // Success message
+                        text: 'Login successful! Ready to find your match? Let’s get started! 💖',
                     });
 
-                    // Store user data in Vuex
                     this.$store.dispatch('setUser', loginUser.user);
-
-                    // Redirect to profile page
                     this.$router.push({ name: 'profile' });
 
                     // Optionally reset form fields
@@ -86,11 +98,12 @@ export default {
                 }
             } catch (error) {
                 console.error('Error logging in:', error);
-                // Emit unexpected error message using EventBus
                 EventBus.$emit('message', {
                     type: 'error',
                     text: 'An unexpected error occurred.',
                 });
+            } finally {
+                this.loading = false; // Reset loading state
             }
         },
     },
@@ -134,6 +147,11 @@ h2 {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+}
+
+.login-btn[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .login-btn:hover {

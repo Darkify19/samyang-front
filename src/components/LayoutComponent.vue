@@ -1,14 +1,12 @@
 <template>
     <div class="layout">
-
         <HeaderComponent />
 
         <main>
             <MessageComponent ref="message" />
-
             <router-view />
-
         </main>
+
         <FooterComponent />
     </div>
 </template>
@@ -31,17 +29,11 @@ export default {
 .layout {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    min-height: 100vh;
 }
 
 main {
     flex: 1;
     padding: 20px;
-    background-color: #f9f9f9;
-    overflow-y: auto;
-}
-
-footer {
-    margin-top: 20px;
 }
 </style>

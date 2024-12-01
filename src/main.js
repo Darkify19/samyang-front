@@ -1,3 +1,4 @@
+//src/main.js
 import './assets/styles.css';
 import defaultPlaceholder from '@/assets/default_placeholder.png';
 import Vue from 'vue';

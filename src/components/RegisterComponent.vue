@@ -103,6 +103,19 @@ export default {
   },
   methods: {
     async registerUser() {
+      // Check for missing fields
+      if (!this.firstName || !this.lastName || !this.email || !this.password || !this.passwordConfirmation) {
+        EventBus.$emit('message', { type: 'error', text: 'Please fill in all required fields.' });
+        return;
+      }
+
+      // Ensure passwords match
+      if (this.password !== this.passwordConfirmation) {
+        EventBus.$emit('message', { type: 'error', text: 'Passwords do not match.' });
+        return;
+      }
+
+
       const REGISTER_USER_MUTATION = gql`
         mutation RegisterUser(
           $firstName: String! 
@@ -163,9 +176,9 @@ export default {
             passwordConfirmation: this.passwordConfirmation,
             mobileNumber: this.mobileNumber,
             birthdate: this.birthdate,
-            gender: this.gender === 'Other' ? this.customGender : this.gender,
-            sexualOrientation: this.sexualOrientation === 'Other' ? this.customSexualOrientation : this.sexualOrientation,
-            genderInterest: this.genderInterest === 'Other' ? this.customGenderInterest : this.genderInterest,
+            gender: this.gender,
+            sexualOrientation: this.sexualOrientation,
+            genderInterest: this.genderInterest,
             location: this.location,
             bio: this.bio,
           },
@@ -174,27 +187,19 @@ export default {
         const { registerUser } = response.data;
 
         if (registerUser.errors.length > 0) {
-          EventBus.$emit('message', {
-            type: 'error',
-            text: registerUser.errors.join(', '),
-          });
+          EventBus.$emit('message', { type: 'error', text: registerUser.errors.join(', ') });
         } else {
-          EventBus.$emit('message', {
-            type: 'success',
-            text: 'User registered successfully! Proceed to Login',
-          });
+          EventBus.$emit('message', { type: 'success', text: 'User registered successfully! Proceed to Login.' });
         }
       } catch (error) {
         console.error('Error creating user:', error);
-        EventBus.$emit('message', {
-          type: 'error',
-          text: 'An unexpected error occurred.',
-        });
+        EventBus.$emit('message', { type: 'error', text: 'An unexpected error occurred.' });
       }
     },
   },
 };
 </script>
+
 
 
 <style scoped>

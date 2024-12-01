@@ -1,12 +1,26 @@
 <template>
     <div class="profile-container container">
         <h2>User Profile</h2>
-
         <div class="user-info" v-if="user">
-            <img :src="user.photos && user.photos.length ? user.photos[0] : $defaultPlaceholder" alt="Profile Picture"
-                class="profile-picture" />
+            <img :src="user.photos && user.photos.length ? user.photos[0].url : $defaultPlaceholder"
+                alt="Profile Picture" class="profile-picture" />
 
             <p v-if="!user.photos || !user.photos.length">You have not yet uploaded any photos. Please upload.</p>
+
+            <div class="photo-upload">
+                <!-- File Input for Upload -->
+                <input type="file" @change="handleFileChange" :disabled="user.photos && user.photos.length >= 5" />
+                <p v-if="user.photos && user.photos.length >= 5">You can only upload 5 photos.</p>
+            </div>
+
+            <!-- Display Current Photos -->
+            <div class="current-photos">
+                <h3>Current Photos</h3>
+                <div v-if="user.photos && user.photos.length">
+                    <img v-for="(photo, index) in user.photos" :key="photo.id" :src="photo.url"
+                        :alt="'Photo ' + (index + 1)" class="thumbnail" />
+                </div>
+            </div>
 
             <div class="user-details">
                 <form @submit.prevent="updateProfile" class="form-group two-columns">
@@ -80,7 +94,6 @@
     </div>
 </template>
 
-
 <script>
 import { gql } from '@apollo/client/core';
 import { EventBus } from '@/eventBus';
@@ -100,9 +113,7 @@ export default {
                 location: '',
                 bio: '',
             },
-            customGender: '',
-            customSexualOrientation: '',
-            customGenderInterest: '',
+            selectedFile: null,
         };
     },
     computed: {
@@ -121,6 +132,61 @@ export default {
         },
     },
     methods: {
+        async handleFileChange(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Check if file size and type are correct (optional)
+            if (file.size > 5 * 1024 * 1024) {
+                EventBus.$emit('message', { type: 'error', text: 'File size exceeds 5MB.' });
+                return;
+            }
+
+            // Initiate upload
+            try {
+                const response = await this.uploadPhoto(file);  // Make sure `file` is correctly passed
+
+                if (response.errors.length) {
+                    EventBus.$emit('message', { type: 'error', text: response.errors.join(', ') });
+                } else {
+                    this.user.photos.push(response.photo); // Add new photo to the user's photos
+                    EventBus.$emit('message', { type: 'success', text: 'Photo uploaded successfully!' });
+                }
+            } catch (error) {
+                console.error('Error uploading photo:', error);
+                EventBus.$emit('message', { type: 'error', text: 'An error occurred while uploading the photo.' });
+            }
+        },
+
+        async uploadPhoto(file) {
+            const UPLOAD_PHOTO_MUTATION = gql`
+                mutation UploadPhoto($input: UploadPhotoInput!) {
+                    uploadPhoto(input: $input) {
+                        photo {
+                            id
+                            url
+                        }
+                        errors
+                    }
+                }
+            `;
+
+            const userId = this.$store.getters.getUserId; // Get the user ID from the store
+
+            // Send file and user_id as 'input' in the mutation
+            const { data } = await this.$apollo.mutate({
+                mutation: UPLOAD_PHOTO_MUTATION,
+                variables: {
+                    input: {
+                        file: file, // File passed as Upload
+                        user_id: userId, // User ID
+                    },
+                },
+            });
+
+            return data.uploadPhoto;
+        },
+
         async updateProfile() {
             const UPDATE_USER_MUTATION = gql`
                 mutation UpdateUser($input: UpdateUserInput!) {
@@ -160,29 +226,20 @@ export default {
             try {
                 const response = await this.$apollo.mutate({
                     mutation: UPDATE_USER_MUTATION,
-                    variables: { input }, // Pass input as a single object
+                    variables: { input }, // Pass input as an object
                 });
 
                 const { updateUser } = response.data;
 
                 if (updateUser.errors.length > 0) {
-                    EventBus.$emit('message', {
-                        type: 'error',
-                        text: updateUser.errors.join(', '),
-                    });
+                    EventBus.$emit('message', { type: 'error', text: updateUser.errors.join(', ') });
                 } else {
                     this.$store.dispatch('setUser', updateUser.user);
-                    EventBus.$emit('message', {
-                        type: 'success',
-                        text: 'Profile updated successfully!',
-                    });
+                    EventBus.$emit('message', { type: 'success', text: 'Profile updated successfully!' });
                 }
             } catch (error) {
                 console.error('Error updating profile:', error);
-                EventBus.$emit('message', {
-                    type: 'error',
-                    text: 'An unexpected error occurred.',
-                });
+                EventBus.$emit('message', { type: 'error', text: 'An unexpected error occurred.' });
             }
         },
     },
