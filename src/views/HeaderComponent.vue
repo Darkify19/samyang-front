@@ -1,5 +1,8 @@
 <template>
     <header>
+        <div class="logo-container">
+            <img :src="$myLogo1" alt="Logo" class="logo" />
+        </div>
         <nav>
             <ul>
                 <li><router-link to="/">Home</router-link></li>
@@ -15,6 +18,7 @@
         </nav>
     </header>
 </template>
+
 
 <script>
 export default {
@@ -39,6 +43,25 @@ header {
     background-color: #821d30;
     z-index: 10;
     box-shadow: 0px 1px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    box-sizing: border-box;
+}
+
+.logo-container {
+    flex-shrink: 0;
+    /* Prevents logo from shrinking */
+}
+
+.logo {
+    width: 100px;
+    margin-left: 40px;
+
+    position: static;
+    /* Adjust size as needed */
+    height: auto;
 }
 
 nav ul {

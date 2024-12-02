@@ -76,11 +76,8 @@ export default {
         }
       }
     }
-  `,
-                    variables: { userId: this.currentUserId },
+  `, variables: { userId: this.currentUserId },
                 });
-
-                // Deduplicate matches logic
                 const uniqueMatches = [];
                 const matchSet = new Set();
 
@@ -114,73 +111,95 @@ export default {
 };
 </script>
 
-
-
-
 <style scoped>
 .matches-container {
     width: 100%;
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
     padding: 20px;
-    font-family: Arial, sans-serif;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #EED5D1;
+    border-radius: 10px;
 }
 
 h2 {
     text-align: center;
+    color: #D1114D;
+    font-size: 24px;
     margin-bottom: 20px;
 }
 
 .matches-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
 }
 
 .match-card {
     background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    padding: 20px;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.match-info {
-    margin-bottom: 10px;
+.match-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+.profile-container {
+    width: 100%;
+    max-width: 120px;
+    margin-bottom: 15px;
+}
+
+.profile-pic {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #D6517C;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .match-info h3 {
-    font-size: 18px;
-    margin-bottom: 5px;
+    font-size: 20px;
+    color: #D1114D;
+    margin-bottom: 10px;
 }
 
 .match-info p {
     font-size: 14px;
     color: #555;
+    margin: 5px 0;
 }
 
 .chat-button {
-    background-color: #007bff;
+    background-color: #D6517C;
     color: white;
-    padding: 10px 15px;
+    padding: 12px 20px;
     border: none;
-    border-radius: 4px;
+    border-radius: 30px;
     cursor: pointer;
-    text-align: center;
-    font-size: 14px;
-    margin-top: 10px;
-    transition: background-color 0.3s;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s;
+    margin-top: 15px;
 }
 
 .chat-button:hover {
-    background-color: #0056b3;
+    background-color: #F38592;
+    transform: scale(1.05);
 }
 
 .no-matches {
     text-align: center;
-    font-size: 16px;
+    font-size: 18px;
     color: #777;
+    font-weight: bold;
 }
 </style>

@@ -10,6 +10,9 @@ import { store } from './store';
 import defaultPlaceholder from '@/assets/default_placeholder.png';
 import myBackground from '@/assets/myapp_bg.jpg';
 import myLogo from '@/assets/myapp_logo.png';
+import myLogo1 from '@/assets/my_logo.png';
+Vue.prototype.$myLogo1 = myLogo1;
+
 
 Vue.prototype.$defaultPlaceholder = defaultPlaceholder;
 Vue.prototype.$myBackground = myBackground;
@@ -19,7 +22,7 @@ Vue.config.productionTip = false;
 store.dispatch('initializeStore'); // Initialize store on app startup
 
 const httpLink = new HttpLink({
-  uri: 'http://localhost:3000/graphql',
+  uri: 'https://test-backend-development.onrender.com/graphql',
 });
 
 const apolloClient = new ApolloClient({

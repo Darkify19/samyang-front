@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <h1>Welcome to the Dating App</h1>
+    <h1>Hello Vlog welcome to my guis<br></h1>
     <router-view></router-view>
   </div>
 </template>
@@ -26,5 +26,9 @@ nav a {
 
 nav a.router-link-exact-active {
   color: #42b983;
+}
+
+h1 {
+  color: white;
 }
 </style>

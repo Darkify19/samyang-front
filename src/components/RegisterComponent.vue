@@ -4,6 +4,8 @@
     <form @submit.prevent="registerUser" class="register-form">
       <!-- Left Column -->
       <div class="form-column">
+        <h3>User Information:</h3>
+
         <div class="form-group">
           <input v-model="firstName" placeholder="First Name" required />
         </div>
