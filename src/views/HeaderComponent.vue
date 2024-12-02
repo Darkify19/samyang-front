@@ -56,9 +56,8 @@ header {
 }
 
 .logo {
-    width: 100px;
+    width: 150px;
     margin-left: 40px;
-
     position: static;
     /* Adjust size as needed */
     height: auto;
