@@ -8,11 +8,11 @@ const uploadLink = createUploadLink({
     credentials: 'same-origin', // This sends cookies with the request
 });
 
-const cache = new InMemoryCache();
+
 
 const apolloClient = new ApolloClient({
-    link: uploadLink, // Use the upload link to handle file uploads
-    cache,
+    link: uploadLink, // This is where we set the upload link for file handling
+    cache: new InMemoryCache(),
 });
 
 export const apolloProvider = new ApolloProvider({

@@ -1,8 +1,7 @@
 <template>
   <div id="app">
     <h1>Welcome to the Dating App</h1>
-    <router-link to="/register">Register</router-link>
-    <router-view></router-view> <!-- This is where the routed component will be rendered -->
+    <router-view></router-view>
   </div>
 </template>
 

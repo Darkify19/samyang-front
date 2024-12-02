@@ -142,45 +142,48 @@ export default {
                 return;
             }
 
-            // Initiate upload
             try {
-                const response = await this.uploadPhoto(file);  // Make sure `file` is correctly passed
-
+                const response = await this.uploadPhoto(file);
                 if (response.errors.length) {
                     EventBus.$emit('message', { type: 'error', text: response.errors.join(', ') });
                 } else {
-                    this.user.photos.push(response.photo); // Add new photo to the user's photos
+                    this.user.photos.push(response.photo);
                     EventBus.$emit('message', { type: 'success', text: 'Photo uploaded successfully!' });
                 }
             } catch (error) {
                 console.error('Error uploading photo:', error);
                 EventBus.$emit('message', { type: 'error', text: 'An error occurred while uploading the photo.' });
             }
+
+            console.log('Selected file:', file);  // Log file to ensure it is selected
+
         },
 
         async uploadPhoto(file) {
             const UPLOAD_PHOTO_MUTATION = gql`
-                mutation UploadPhoto($input: UploadPhotoInput!) {
-                    uploadPhoto(input: $input) {
-                        photo {
-                            id
-                            url
-                        }
-                        errors
-                    }
-                }
-            `;
+    mutation UploadPhoto($input: UploadPhotoInput!) {
+      uploadPhoto(input: $input) {
+        photo {
+          id
+          url
+        }
+        errors
+      }
+    }
+  `;
 
             const userId = this.$store.getters.getUserId; // Get the user ID from the store
 
-            // Send file and user_id as 'input' in the mutation
+            const input = {
+                userId,  // Pass the user ID
+                file,    // Pass the file directly
+            };
+
+            // Make sure to use Apollo's file upload syntax here
             const { data } = await this.$apollo.mutate({
                 mutation: UPLOAD_PHOTO_MUTATION,
                 variables: {
-                    input: {
-                        file: file, // File passed as Upload
-                        user_id: userId, // User ID
-                    },
+                    input, // This should be an object that includes the file.
                 },
             });
 
@@ -244,7 +247,9 @@ export default {
         },
     },
 };
+
 </script>
+
 
 
 

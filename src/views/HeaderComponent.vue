@@ -4,10 +4,12 @@
             <ul>
                 <li><router-link to="/">Home</router-link></li>
                 <li v-if="$store.getters.isAuthenticated"><router-link to="/profile">Profile</router-link></li>
+                <li v-if="$store.getters.isAuthenticated"><router-link to="/swipe">Swipe</router-link></li>
+                <li v-if="$store.getters.isAuthenticated"><router-link to="/matches">Matches</router-link></li>
                 <li v-if="!$store.getters.isAuthenticated"><router-link to="/login">Login</router-link></li>
                 <li v-if="!$store.getters.isAuthenticated"><router-link to="/register">Register</router-link></li>
-                <li v-if="$store.getters.isAuthenticated">
-                    <button @click="logout" class="logout-btn">Logout</button>
+                <li v-if="$store.getters.isAuthenticated" @click="logout">
+                    <router-link to="#">Logout</router-link>
                 </li>
             </ul>
         </nav>
@@ -58,18 +60,6 @@ nav ul li a {
 }
 
 nav ul li a:hover {
-    color: #D1114D;
-}
-
-.logout-btn {
-    background-color: transparent;
-    border: none;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.logout-btn:hover {
     color: #D1114D;
 }
 </style>

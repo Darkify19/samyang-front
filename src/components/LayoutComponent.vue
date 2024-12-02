@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import HeaderComponent from './HeaderComponent.vue';
-import FooterComponent from './FooterComponent.vue';
+import HeaderComponent from '../views/HeaderComponent.vue';
+import FooterComponent from '../views/FooterComponent.vue';
 import MessageComponent from './MessageComponent.vue';
 
 export default {

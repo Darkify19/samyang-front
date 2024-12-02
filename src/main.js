@@ -1,20 +1,25 @@
 //src/main.js
 import './assets/styles.css';
-import defaultPlaceholder from '@/assets/default_placeholder.png';
 import Vue from 'vue';
 import App from './App.vue';
 import VueApollo from 'vue-apollo';
 import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client/core';
 import router from './router';
-import { store } from './store';  // Make sure this is imported
+import { store } from './store';
 
-Vue.config.productionTip = false;
+import defaultPlaceholder from '@/assets/default_placeholder.png';
+import myBackground from '@/assets/myapp_bg.jpg';
+import myLogo from '@/assets/myapp_logo.png';
+
 Vue.prototype.$defaultPlaceholder = defaultPlaceholder;
+Vue.prototype.$myBackground = myBackground;
+Vue.prototype.$myLogo = myLogo;
+Vue.config.productionTip = false;
 
 store.dispatch('initializeStore'); // Initialize store on app startup
 
 const httpLink = new HttpLink({
-  uri: 'http://localhost:3000/graphql', // Your GraphQL endpoint
+  uri: 'http://localhost:3000/graphql',
 });
 
 const apolloClient = new ApolloClient({
@@ -31,6 +36,6 @@ Vue.use(VueApollo);
 new Vue({
   render: (h) => h(App),
   router,
-  store,  // Ensure the store is passed here
+  store,
   apolloProvider,
 }).$mount('#app');

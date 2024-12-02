@@ -1,6 +1,6 @@
 <template>
     <footer>
-        <p>&copy; 2024 Dating App. All rights reserved.</p>
+        <p>&copy; 2024 Dating App. Carl Janzell Oropesa.</p>
     </footer>
 </template>
 
@@ -18,8 +18,8 @@ footer {
     width: 100%;
     padding: 4px 0;
     border-top: 1px solid #eaeaea;
-    color: #777;
-    background-color: #fff;
+    color: white;
+    background-color: #821d30;
 
 }
 </style>
