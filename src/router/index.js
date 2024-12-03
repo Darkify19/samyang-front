@@ -60,19 +60,16 @@ const routes = [
         path: 'users',
         name: 'userList',
         component: UserListComponent, // User Manager (User List)
-        meta: { requiresAuth: true, role: 'admin' }, // Add meta for role check
       },
       {
         path: 'users/:id',
         name: 'userProfile',
         component: UserProfileComponent, // User Profile View
-        meta: { requiresAuth: true, role: 'admin' }, // Add meta for role check
       },
       {
         path: 'users/:id/edit',
         name: 'editUser',
         component: EditUserProfileComponent, // Edit User Profile
-        meta: { requiresAuth: true, role: 'admin' }, // Add meta for role check
       },
     ],
   },
@@ -81,25 +78,6 @@ const routes = [
 const router = new VueRouter({
   routes,
   mode: 'history', // To remove the # from the URL
-});
-
-// Global route guard for authentication and role check
-router.beforeEach((to, from, next) => {
-  const isAuthenticated = localStorage.getItem('auth_token'); // Check if user is authenticated (adjust based on your auth method)
-  const userRole = localStorage.getItem('user_role'); // Assuming the user role is saved in localStorage
-
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    // If the route requires authentication
-    if (!isAuthenticated) {
-      next('/login'); // Redirect to login if not authenticated
-    } else if (to.meta.role && to.meta.role !== userRole) {
-      next('/login'); // Redirect to login if the user is not an admin
-    } else {
-      next(); // Proceed if authenticated and role matches
-    }
-  } else {
-    next(); // Proceed if no authentication is required
-  }
 });
 
 export default router;

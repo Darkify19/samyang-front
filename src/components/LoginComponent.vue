@@ -56,6 +56,7 @@ export default {
                 }
             `;
 
+            // Check for empty fields
             if (!this.email || !this.password) {
                 EventBus.$emit('message', {
                     type: 'error',
@@ -92,13 +93,11 @@ export default {
 
                     this.$store.dispatch('setUser', loginUser.user);
 
-                    // Check if the user is an admin
+                    // Redirect based on user role
                     if (loginUser.user.admin) {
-                        // Redirect to the admin section if the user is an admin
-                        this.$router.push({ name: 'userList' });
+                        this.$router.replace({ name: 'userList' });
                     } else {
-                        // Otherwise, redirect to the user profile
-                        this.$router.push({ name: 'profile' });
+                        this.$router.replace({ name: 'profile' });
                     }
 
                     // Optionally reset form fields
@@ -129,17 +128,11 @@ export default {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
     margin: 0 auto;
-    /* Center horizontally */
     position: absolute;
-    /* Use absolute positioning */
     top: 50%;
-    /* Move down 50% from the top */
     left: 50%;
-    /* Move right 50% from the left */
     transform: translate(-50%, -50%);
-    /* Offset by 50% of the container's height and width to center it */
 }
-
 
 h2 {
     margin-bottom: 20px;
