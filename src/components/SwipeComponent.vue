@@ -12,17 +12,19 @@
                 <p>{{ user.location }}</p>
                 <p>{{ user.bio }}</p>
 
-                <!-- Display user gender -->
                 <p class="user-gender" :class="{ 'gender-match': isGenderMatch(user.gender) }">
                     Gender: {{ user.gender }}
                 </p>
             </div>
+
+        </div>
+        <!-- Floating Icons for Heart and X -->
+        <div class="swipe-actions">
+            <i class="fa fa-times-circle action-x"></i>
+            <i class="fa fa-gratipay action-heart"></i>
         </div>
     </div>
 </template>
-
-
-
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import swipeLogic from './custom.js';
@@ -36,7 +38,7 @@ export default {
             startX: 0, // Starting position for swipe
             currentCardIndex: null, // Track the index of the current card
             cardBoxShadow: '0 6px 15px rgba(0, 255, 0, 0.5)', // Default shadow for "right" swipe
-            defaultPlaceholder: this.$defaultPlaceholder, // Default placeholder image path
+            defaultPlaceholder: this.$defaultPlaceholder, // Default placehsolder image path
         };
     },
     computed: {
@@ -118,10 +120,7 @@ export default {
             return this.currentUser && gender === this.currentUser.genderInterest;
         },
 
-        skipUser(index) {
-            this.users.push(this.users.splice(index, 1)[0]);
-            this.resetCard();
-        },
+
     },
     mounted() {
         // Ensure currentUser is populated and genderInterest exists
@@ -166,7 +165,7 @@ export default {
 .user-card.swipe-out {
     transform: translateX(1000px) rotate(30deg);
     opacity: 0;
-    transition: transform 0.5s ease, opacity 0.3s ease;
+    transition: transform 1.0s ease, opacity 0.3s ease;
 }
 
 .user-details {
@@ -192,20 +191,31 @@ export default {
     margin: 5px 0;
 }
 
-.user-card:nth-child(2) {
-    z-index: 9;
-}
-
-.user-card:nth-child(3) {
-    z-index: 8;
-}
-
-.user-card:nth-child(4) {
-    z-index: 7;
-}
-
 .user-card:hover .user-details {
     background: rgba(0, 0, 0, 0.8);
     transform: translateY(0px);
+}
+
+.swipe-actions {
+    position: absolute;
+    top: 95%;
+    width: 25%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+    z-index: 15;
+}
+
+.action-x,
+.action-heart {
+    font-size: 5rem;
+    color: black;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.action-x:hover,
+.action-heart:hover {
+    transform: scale(1.1);
 }
 </style>

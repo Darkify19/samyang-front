@@ -24,15 +24,14 @@
         <div class="form-group">
           <input v-model="mobileNumber" placeholder="Mobile Number" />
         </div>
-        <button type="submit" class="register-btn">Register</button>
-      </div>
-
-      <!-- Right Column -->
-      <div class="form-column">
         <div class="form-group">
           <h3>Birthdate:</h3>
           <input v-model="birthdate" type="date" required />
         </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="form-column">
         <div class="form-group">
           <h3>Gender:</h3>
           <select v-model="gender" required>
@@ -47,9 +46,10 @@
           <h3>Sexual Orientation:</h3>
           <select v-model="sexualOrientation" required>
             <option value="" disabled selected>Select Sexual Orientation</option>
-            <option>Heterosexual</option>
-            <option>Homosexual</option>
+            <option>Straight</option>
+            <option>Gay</option>
             <option>Bisexual</option>
+            <option>Lesbian</option>
             <option>Asexual</option>
             <option>Other</option>
           </select>
@@ -61,7 +61,7 @@
             <option>Male</option>
             <option>Female</option>
             <option>Non-binary</option>
-            <option>Any</option>
+            <option>Everyone</option>
           </select>
         </div>
         <div class="form-group">
@@ -70,6 +70,8 @@
         <div class="form-group">
           <textarea v-model="bio" placeholder="Bio"></textarea>
         </div>
+        <button type="submit" class="register-btn">Register</button>
+
       </div>
 
       <input type="hidden" :value="authenticityToken" name="authenticity_token" />

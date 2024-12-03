@@ -25,30 +25,30 @@
             <div class="user-details">
                 <form @submit.prevent="updateProfile" class="form-group two-columns">
                     <div>
-                        <label for="firstName">First Name:</label>
+                        <i class="fa fa-user-circle"></i> <label for="firstName">First Name:</label>
                         <input id="firstName" v-model="userDetails.firstName" type="text"
                             placeholder="Enter your first name" />
                     </div>
                     <div>
-                        <label for="lastName">Last Name:</label>
+                        <i class="fa fa-user-circle"></i> <label for="lastName">Last Name:</label>
                         <input id="lastName" v-model="userDetails.lastName" type="text"
                             placeholder="Enter your last name" />
                     </div>
                     <div>
-                        <label for="email">Email:</label>
+                        <i class="fa fa-envelope"></i> <label for="email">Email:</label>
                         <input id="email" v-model="userDetails.email" type="email" placeholder="Enter your email" />
                     </div>
                     <div>
-                        <label for="mobileNumber">Mobile Number:</label>
+                        <i class="fa fa-phone"></i> <label for="mobileNumber">Mobile Number:</label>
                         <input id="mobileNumber" v-model="userDetails.mobileNumber" type="text"
                             placeholder="Enter your mobile number" />
                     </div>
                     <div>
-                        <label for="birthdate">Birthdate:</label>
+                        <i class="fa fa-birthday-cake"></i> <label for="birthdate">Birthdate:</label>
                         <input id="birthdate" v-model="userDetails.birthdate" type="date" />
                     </div>
                     <div>
-                        <label for="gender">Gender:</label>
+                        <i class="fa fa-venus-mars"></i> <label for="gender">Gender:</label>
                         <select v-model="userDetails.gender" required>
                             <option value="" disabled selected>Select Gender</option>
                             <option>Male</option>
@@ -58,41 +58,43 @@
                         </select>
                     </div>
                     <div>
-                        <label for="sexualOrientation">Sexual Orientation:</label>
+                        <i class="fa fa-heart"></i> <label for="sexualOrientation">Sexual Orientation:</label>
                         <select v-model="userDetails.sexualOrientation" required>
                             <option value="" disabled selected>Select Sexual Orientation</option>
-                            <option>Heterosexual</option>
-                            <option>Homosexual</option>
+                            <option>Straight</option>
+                            <option>Gay</option>
                             <option>Bisexual</option>
+                            <option>Lesbian</option>
                             <option>Asexual</option>
                             <option>Other</option>
                         </select>
                     </div>
                     <div>
-                        <label for="genderInterest">Gender Interest:</label>
+                        <i class="fa fa-heart"></i> <label for="genderInterest">Gender Interest:</label>
                         <select v-model="userDetails.genderInterest" required>
                             <option value="" disabled selected>Select Gender Interest</option>
                             <option>Male</option>
                             <option>Female</option>
                             <option>Non-binary</option>
-                            <option>Any</option>
+                            <option>Everyone</option>
                         </select>
                     </div>
                     <div>
-                        <label for="location">Location:</label>
+                        <i class="fa fa-map-marker-alt"></i> <label for="location">Location:</label>
                         <input id="location" v-model="userDetails.location" type="text"
                             placeholder="Enter your location" />
                     </div>
                     <div>
-                        <label for="bio">Bio:</label>
+                        <i class="fa fa-pencil-alt"></i> <label for="bio">Bio:</label>
                         <textarea id="bio" v-model="userDetails.bio" placeholder="Tell us about yourself"></textarea>
                     </div>
-                    <button type="submit">Save Changes</button>
+                    <button type="submit"><i class="fa fa-save"></i> Save Changes</button>
                 </form>
             </div>
         </div>
     </div>
 </template>
+
 
 <script>
 import { gql } from '@apollo/client/core';
