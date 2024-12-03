@@ -3,22 +3,22 @@
         <h2>Edit User Profile</h2>
         <form @submit.prevent="submitForm">
             <label for="firstName">First Name</label>
-            <input type="text" v-model="user.firstName" id="firstName" required />
+            <input type="text" v-model="user.firstName" id="firstName" :class="{ success: success }" required />
 
             <label for="lastName">Last Name</label>
-            <input type="text" v-model="user.lastName" id="lastName" required />
+            <input type="text" v-model="user.lastName" id="lastName" :class="{ success: success }" required />
 
             <label for="email">Email</label>
-            <input type="email" v-model="user.email" id="email" required />
+            <input type="email" v-model="user.email" id="email" :class="{ success: success }" required />
 
             <label for="mobileNumber">Mobile Number</label>
-            <input type="text" v-model="user.mobileNumber" id="mobileNumber" required />
+            <input type="text" v-model="user.mobileNumber" id="mobileNumber" :class="{ success: success }" required />
 
             <label for="birthdate">Birthdate</label>
-            <input type="date" v-model="user.birthdate" id="birthdate" required />
+            <input type="date" v-model="user.birthdate" id="birthdate" :class="{ success: success }" required />
 
             <label for="gender">Gender</label>
-            <select v-model="user.gender" id="gender" required>
+            <select v-model="user.gender" id="gender" :class="{ success: success }" required>
                 <option value="" disabled>Select Gender</option>
                 <option>Male</option>
                 <option>Female</option>
@@ -27,7 +27,7 @@
             </select>
 
             <label for="sexualOrientation">Sexual Orientation</label>
-            <select v-model="user.sexualOrientation" id="sexualOrientation" required>
+            <select v-model="user.sexualOrientation" id="sexualOrientation" :class="{ success: success }" required>
                 <option value="" disabled>Select Sexual Orientation</option>
                 <option>Straight</option>
                 <option>Gay</option>
@@ -38,7 +38,7 @@
             </select>
 
             <label for="genderInterest">Gender Interest</label>
-            <select v-model="user.genderInterest" id="genderInterest" required>
+            <select v-model="user.genderInterest" id="genderInterest" :class="{ success: success }" required>
                 <option value="" disabled>Select Gender Interest</option>
                 <option>Male</option>
                 <option>Female</option>
@@ -47,16 +47,17 @@
             </select>
 
             <label for="location">Location</label>
-            <input type="text" v-model="user.location" id="location" required />
+            <input type="text" v-model="user.location" id="location" :class="{ success: success }" required />
 
             <label for="bio">Bio</label>
-            <textarea v-model="user.bio" id="bio" required></textarea>
+            <textarea v-model="user.bio" id="bio" :class="{ success: success }" required></textarea>
 
             <button type="submit">Save Changes</button>
         </form>
         <button @click="goBack">Back</button>
     </div>
 </template>
+
 
 <script>
 import { gql } from '@apollo/client/core';
@@ -77,7 +78,8 @@ export default {
                 location: '',
                 bio: '',
             },
-            loading: true, // To manage loading state
+            loading: true,
+            success: false, // To control green flash effect
         };
     },
     methods: {
@@ -165,7 +167,12 @@ export default {
                     EventBus.$emit('message', { type: 'error', text: data.updateUser.errors.join(', ') });
                 } else {
                     EventBus.$emit('message', { type: 'success', text: 'Profile updated successfully!' });
-                    this.$router.push({ name: 'userProfile', params: { id: data.updateUser.user.id } });
+
+                    // Trigger green flash effect
+                    this.success = true;
+                    setTimeout(() => {
+                        this.success = false;
+                    }, 300);
                 }
             } catch (error) {
                 console.error(error);
@@ -205,5 +212,21 @@ select {
     margin-bottom: 12px;
     padding: 8px;
     width: 100%;
+}
+
+input.success,
+textarea.success,
+select.success {
+    animation: flash-green 1s;
+}
+
+@keyframes flash-green {
+    0% {
+        background-color: #d4edda;
+    }
+
+    100% {
+        background-color: transparent;
+    }
 }
 </style>

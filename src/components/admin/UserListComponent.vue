@@ -48,36 +48,57 @@ export default {
         },
         // Delete user
         async deleteUser(id) {
-            // Send GraphQL mutation to delete user
-            const response = await this.$apollo.mutate({
-                mutation: gql`
-            mutation DeleteUser($id: ID!) {
-              deleteUser(id: $id)
-            }
-          `,
-                variables: { id },
-            });
-            if (response.data.deleteUser) {
-                this.users = this.users.filter(user => user.id !== id);
+            const confirmation = confirm("Are you sure you want to delete this user?");
+            if (!confirmation) return;
+
+            try {
+                const response = await this.$apollo.mutate({
+                    mutation: gql`
+                        mutation DeleteUser($input: DeleteUserInput!) {
+                            deleteUser(input: $input) {
+                                success
+                                errors
+                            }
+                        }
+                    `,
+                    variables: { input: { id } },
+                });
+
+                const { success, errors } = response.data.deleteUser;
+
+                if (success) {
+                    this.users = this.users.filter((user) => user.id !== id);
+                    alert("User deleted successfully.");
+                } else {
+                    alert(`Failed to delete user: ${errors.join(", ")}`);
+                }
+            } catch (error) {
+                console.error("Error deleting user:", error);
+                alert("An unexpected error occurred while deleting the user.");
             }
         },
         // Fetch users from the GraphQL API
         async fetchUsers() {
-            const { data } = await this.$apollo.query({
-                query: gql`
-            query GetUsers {
-              users {
-                id
-                firstName
-                lastName
-                photos {
-                  url
-                }
-              }
+            try {
+                const { data } = await this.$apollo.query({
+                    query: gql`
+                        query GetUsers {
+                            users {
+                                id
+                                firstName
+                                lastName
+                                photos {
+                                    url
+                                }
+                            }
+                        }
+                    `,
+                });
+                this.users = data.users;
+            } catch (error) {
+                console.error("Error fetching users:", error);
+                alert("An error occurred while fetching users.");
             }
-          `,
-            });
-            this.users = data.users;
         },
     },
     mounted() {
@@ -85,6 +106,8 @@ export default {
     },
 };
 </script>
+
+
 
 <style scoped>
 .user-list {
