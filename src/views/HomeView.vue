@@ -75,7 +75,7 @@ export default {
 }
 
 .app-logo {
-  width: 120px;
+  width: 150px;
   height: auto;
   margin-bottom: 20px;
 }

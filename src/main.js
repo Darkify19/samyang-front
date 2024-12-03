@@ -1,10 +1,10 @@
-//src/main.js
+// src/main.js
 import './assets/styles.css';
 import Vue from 'vue';
 import App from './App.vue';
 import VueApollo from 'vue-apollo'; // Using vue-apollo@3
 import apolloClient from './apollo'; // Import Apollo client configuration
-import router from './router';
+import router from './router'; // Import updated router
 import { store } from './store';
 
 import defaultPlaceholder from '@/assets/default_placeholder.png';
@@ -31,7 +31,7 @@ const apolloProvider = new VueApollo({
 
 new Vue({
   render: (h) => h(App),
-  router,
+  router, // Pass the updated router
   store,
   apolloProvider,
 }).$mount('#app');

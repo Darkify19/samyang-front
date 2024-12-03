@@ -45,6 +45,7 @@ export default {
                             genderInterest
                             location
                             bio
+                            admin
                             photos {
                                 id
                                 url
@@ -90,7 +91,15 @@ export default {
                     });
 
                     this.$store.dispatch('setUser', loginUser.user);
-                    this.$router.push({ name: 'profile' });
+
+                    // Check if the user is an admin
+                    if (loginUser.user.admin) {
+                        // Redirect to the admin section if the user is an admin
+                        this.$router.push({ name: 'userList' });
+                    } else {
+                        // Otherwise, redirect to the user profile
+                        this.$router.push({ name: 'profile' });
+                    }
 
                     // Optionally reset form fields
                     this.email = '';
@@ -113,13 +122,24 @@ export default {
 <style scoped>
 .login-container {
     max-width: 400px;
-    margin: 50px auto;
     padding: 20px;
+    width: 600px;
     background-color: #F7D6D0;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
+    margin: 0 auto;
+    /* Center horizontally */
+    position: absolute;
+    /* Use absolute positioning */
+    top: 50%;
+    /* Move down 50% from the top */
+    left: 50%;
+    /* Move right 50% from the left */
+    transform: translate(-50%, -50%);
+    /* Offset by 50% of the container's height and width to center it */
 }
+
 
 h2 {
     margin-bottom: 20px;

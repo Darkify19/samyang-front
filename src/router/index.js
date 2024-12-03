@@ -1,3 +1,4 @@
+// src/router/index.js
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import LayoutComponent from '@/components/LayoutComponent.vue'; // Import the layout component
@@ -7,33 +8,37 @@ import ProfileComponent from '@/components/ProfileComponent.vue';
 import SwipeComponent from '@/components/SwipeComponent.vue'; // Import Swipe component
 import MatchesComponent from '@/components/MatchesComponent.vue'; // Import Matches component
 import HomeView from '@/views/HomeView.vue';
+import AdminLayout from '@/components/admin/AdminLayoutComponent.vue'; // Admin Layout component
+import UserListComponent from '@/components/admin/UserListComponent.vue'; // Admin User List
+import UserProfileComponent from '@/components/admin/UserProfileComponent.vue'; // Admin User Profile
+import EditUserProfileComponent from '@/components/admin/EditUserProfileComponent.vue'; // Admin Edit User Profile
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: '/',
-    component: LayoutComponent,  // Use LayoutComponent to wrap other components
+    component: LayoutComponent,
     children: [
       {
         path: '',
         name: 'home',
-        component: HomeView,  // Replace with your home component or default view
+        component: HomeView,
       },
       {
         path: '/profile',
         name: 'profile',
-        component: ProfileComponent,  // Your Profile Component
+        component: ProfileComponent,
       },
       {
         path: '/swipe',
         name: 'swipe',
-        component: SwipeComponent,  // Swipe Page
+        component: SwipeComponent,
       },
       {
         path: '/matches',
         name: 'matches',
-        component: MatchesComponent,  // Matches Page
+        component: MatchesComponent,
       },
       {
         path: '/login',
@@ -47,11 +52,32 @@ const routes = [
       },
     ],
   },
+  {
+    path: '/admin',
+    component: AdminLayout, // Admin layout component to wrap admin pages
+    children: [
+      {
+        path: 'users',
+        name: 'userList',
+        component: UserListComponent, // User Manager (User List)
+      },
+      {
+        path: 'users/:id',
+        name: 'userProfile',
+        component: UserProfileComponent, // User Profile View
+      },
+      {
+        path: 'users/:id/edit',
+        name: 'editUser',
+        component: EditUserProfileComponent, // Edit User Profile
+      },
+    ],
+  },
 ];
 
 const router = new VueRouter({
   routes,
-  mode: 'history',  // To remove the # from the URL
+  mode: 'history', // To remove the # from the URL
 });
 
 export default router;
