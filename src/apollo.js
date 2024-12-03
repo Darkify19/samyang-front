@@ -5,7 +5,7 @@ import { createUploadLink } from 'apollo-upload-client'; // Import the upload li
 
 const uploadLink = createUploadLink({
     uri: 'https://test-backend-development.onrender.com/graphql', // Your GraphQL endpoint
-    credentials: 'same-origin', // This sends cookies with the request
+    credentials: 'include', // This sends cookies with the request
 });
 
 
