@@ -29,7 +29,7 @@ export default {
 header {
     background-color: #821d30;
     color: white;
-    padding: 15px 20px;
+    padding: 20px;
     border-radius: 8px 8px 0 0;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
@@ -69,7 +69,7 @@ nav ul li a:hover {
 
 main {
     flex: 1;
-    padding: 20px;
+    padding: 15px;
     background-color: white;
     border-radius: 0 0 8px 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);

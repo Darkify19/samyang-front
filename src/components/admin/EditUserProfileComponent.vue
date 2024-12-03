@@ -77,27 +77,50 @@ export default {
                 location: '',
                 bio: '',
             },
+            loading: true, // To manage loading state
         };
     },
-    computed: {
-        userData() {
-            return this.$store.getters.getUser;
-        },
-    },
-    watch: {
-        userData: {
-            immediate: true,
-            handler(newValue) {
-                if (newValue) {
-                    this.user = { ...newValue };
-                }
-            },
-        },
-    },
     methods: {
+        // Fetch user data by ID
+        async fetchUser() {
+            try {
+                const userId = this.$route.params.id;
+                const { data } = await this.$apollo.query({
+                    query: gql`
+                        query GetUser($id: ID!) {
+                            user(id: $id) {
+                                id
+                                firstName
+                                lastName
+                                email
+                                mobileNumber
+                                birthdate
+                                gender
+                                sexualOrientation
+                                genderInterest
+                                location
+                                bio
+                            }
+                        }
+                    `,
+                    variables: { id: userId },
+                });
+
+                if (data && data.user) {
+                    this.user = { ...data.user };
+                } else {
+                    EventBus.$emit('message', { type: 'error', text: 'User not found!' });
+                    this.$router.push({ name: 'adminUserList' }); // Redirect to admin user list
+                }
+            } catch (error) {
+                console.error(error);
+                EventBus.$emit('message', { type: 'error', text: 'Failed to fetch user data.' });
+            } finally {
+                this.loading = false;
+            }
+        },
         async submitForm() {
             try {
-                // Get the ID of the user being edited (clicked user)
                 const targetUserId = this.$route.params.id;
 
                 const { data } = await this.$apollo.mutate({
@@ -123,7 +146,7 @@ export default {
                     `,
                     variables: {
                         input: {
-                            id: targetUserId, // Set the ID of the user being edited
+                            id: targetUserId,
                             firstName: this.user.firstName,
                             lastName: this.user.lastName,
                             email: this.user.email,
@@ -150,12 +173,15 @@ export default {
             }
         },
         goBack() {
-            // Navigate back to the previous user profile
             this.$router.push({ name: 'userProfile', params: { id: this.$route.params.id } });
         },
     },
+    async created() {
+        await this.fetchUser(); // Fetch user data when the component is created
+    },
 };
 </script>
+
 
 
 <style scoped>
