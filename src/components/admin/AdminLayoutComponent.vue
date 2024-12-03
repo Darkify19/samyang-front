@@ -1,7 +1,10 @@
 <template>
     <div class="admin-layout">
         <header>
-            <h1>Admin Dashboard</h1>
+            <h1>Admin Dashboard </h1>
+            <button v-if="$store.getters.isAuthenticated" @click="logout">
+                <router-link to="#">Logout</router-link>
+            </button>
             <nav>
 
             </nav>
@@ -20,6 +23,11 @@ export default {
         this.checkAdminAccess();
     },
     methods: {
+
+        logout() {
+            this.$store.dispatch('logout');
+            this.$router.push({ path: '/' });
+        },
         checkAdminAccess() {
             const isAuthenticated = this.$store.state.auth.isAuthenticated; // Check if user is authenticated
             const userRole = this.$store.state.auth.user.role; // Assuming you store the user's role in the store

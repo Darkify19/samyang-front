@@ -4,18 +4,23 @@
         <div v-if="user">
             <div class="user-info">
                 <img :src="user.photos[0]?.url || $myLogo" alt="User photo" class="user-photo" />
-                <h3>{{ user.firstName }} {{ user.lastName }}</h3>
-                <p><strong>Location:</strong> {{ user.location }}</p>
-                <p><strong>Bio:</strong> {{ user.bio }}</p>
+                <div class="user-details">
+                    <h3>{{ user.firstName }} {{ user.lastName }}</h3>
+                    <p><strong>Location:</strong> {{ user.location }}</p>
+                    <p><strong>Bio:</strong> {{ user.bio }}</p>
+                </div>
             </div>
             <div class="user-matches">
                 <h3>Matches</h3>
                 <template v-if="hasMatches">
                     <ul>
-                        <li v-for="(match, index) in uniqueMatches" :key="match.likedUser.id || index">
-                            {{ match.likedUser.firstName }} {{ match.likedUser.lastName }}
+                        <li v-for="(match, index) in uniqueMatches" :key="match.likedUser.id || index"
+                            class="match-item">
                             <img :src="match.likedUser.photos[0]?.url || $myLogo" alt="Match photo"
                                 class="match-photo" />
+                            <div class="match-details">
+                                <p>{{ match.likedUser.firstName }} {{ match.likedUser.lastName }}</p>
+                            </div>
                         </li>
                     </ul>
                 </template>
@@ -25,8 +30,6 @@
         <button @click="goBack">Back</button>
     </div>
 </template>
-
-
 
 <script>
 import { gql } from '@apollo/client/core';
@@ -93,21 +96,31 @@ export default {
 };
 </script>
 
-
-
 <style scoped>
 .user-profile {
-    margin: 20px;
+    margin: 30px auto;
+    max-width: 1200px;
     background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+}
+
+h2 {
+    text-align: center;
+    color: #d1114d;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    font-weight: bold;
 }
 
 .user-info {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
+    padding: 10px 0;
+    border-bottom: 2px solid #f0f0f0;
 }
 
 .user-photo {
@@ -116,38 +129,71 @@ export default {
     object-fit: cover;
     border-radius: 50%;
     margin-right: 20px;
-    border: 3px solid #f38592;
+    border: 4px solid #d1114d;
+}
+
+.user-details {
+    flex-grow: 1;
 }
 
 h3 {
     margin: 5px 0;
     color: #821d30;
+    font-size: 1.8rem;
+}
+
+p {
+    color: #555;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.user-matches {
+    margin-top: 40px;
 }
 
 .user-matches h3 {
-    color: #821d30;
+    font-size: 1.6rem;
+    color: #d1114d;
+    margin-bottom: 20px;
+}
+
+.match-item {
+    display: flex;
+    align-items: center;
     margin-bottom: 15px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
 }
 
 .match-photo {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     object-fit: cover;
     border-radius: 50%;
-    margin-right: 12px;
+    margin-right: 15px;
+}
+
+.match-details p {
+    color: #555;
+    font-size: 1.1rem;
+    font-weight: bold;
 }
 
 button {
-    margin-top: 20px;
-    padding: 12px 18px;
+    margin-top: 30px;
+    padding: 14px 28px;
     background-color: #d1114d;
     color: white;
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: bold;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+    max-width: 200px;
+    margin: 30px auto;
 }
 
 button:hover {
@@ -157,5 +203,31 @@ button:hover {
 
 button:active {
     transform: translateY(2px);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .user-info {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .user-photo {
+        margin-bottom: 15px;
+    }
+
+    .match-item {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .match-photo {
+        margin-bottom: 10px;
+    }
+
+    button {
+        width: 100%;
+        max-width: 250px;
+    }
 }
 </style>
