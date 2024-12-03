@@ -15,6 +15,20 @@
 <script>
 export default {
     name: 'AdminLayoutComponent',
+    created() {
+        // Check if the user is logged in and is an admin
+        this.checkAdminAccess();
+    },
+    methods: {
+        checkAdminAccess() {
+            const isAuthenticated = this.$store.state.auth.isAuthenticated; // Check if user is authenticated
+            const userRole = this.$store.state.auth.user.role; // Assuming you store the user's role in the store
+
+            if (!isAuthenticated || userRole !== 'admin') {
+                this.$router.push('/login'); // Redirect to login if not authenticated or not an admin
+            }
+        }
+    }
 };
 </script>
 
