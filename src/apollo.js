@@ -4,7 +4,7 @@ import { ApolloProvider } from '@vue/apollo-option';
 import { createUploadLink } from 'apollo-upload-client'; // Import the upload link
 
 const uploadLink = createUploadLink({
-    uri: process.env.VITE_GRAPHQL_API, // Your GraphQL endpoint
+    uri: 'https://test-backend-development.onrender.com/graphql', // Your GraphQL endpoint
     credentials: 'same-origin', // This sends cookies with the request
 });
 

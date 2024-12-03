@@ -22,7 +22,7 @@ Vue.config.productionTip = false;
 store.dispatch('initializeStore'); // Initialize store on app startup
 
 const httpLink = new HttpLink({
-  uri: process.env.VITE_GRAPHQL_API,
+  uri: 'https://test-backend-development.onrender.com/graphql',
 });
 
 const apolloClient = new ApolloClient({
