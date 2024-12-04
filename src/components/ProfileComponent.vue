@@ -18,9 +18,11 @@
                 <h3>Current Photos</h3>
                 <div>
                     <img v-for="(photo, index) in userPhotos" :key="photo.id" :src="photo.url"
-                        :alt="'Photo ' + (index + 1)" class="thumbnail" />
+                        :alt="'Photo ' + (index + 1)" class="thumbnail" @click="openPhotoViewer(index)" />
                 </div>
             </div>
+            <PhotoViewer v-if="showPhotoViewer" :photos="userPhotos" :startIndex="currentPhotoIndex"
+                @close="showPhotoViewer = false" />
 
             <!-- User Info Update Form -->
             <form @submit.prevent="updateProfile" class="form-group two-columns">
@@ -58,8 +60,13 @@
 import { gql } from '@apollo/client/core';
 import { EventBus } from '@/eventBus';
 import { openCloudinaryWidget } from '@/utils/cloudinaryUploader';
+import PhotoViewer from '@/components/PhotoViewer.vue';
 
 export default {
+
+    components: {
+        PhotoViewer,
+    },
     data() {
         return {
             userDetails: {
@@ -75,6 +82,8 @@ export default {
                 bio: '',
             },
             userPhotos: [],
+            showPhotoViewer: false,
+            currentPhotoIndex: 0,
             defaultPlaceholder: this.defaultPlaceholder,
         };
     },
@@ -102,6 +111,10 @@ export default {
         this.fetchUserPhotos();
     },
     methods: {
+        openPhotoViewer(index) {
+            this.currentPhotoIndex = index;
+            this.showPhotoViewer = true;
+        },
         async fetchUserPhotos() {
             const GET_USER_PHOTOS_QUERY = gql`
                 query GetUserPhotos($id: ID!) {
