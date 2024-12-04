@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { gql } from '@apollo/client/core';
+import apolloClient from '../apollo'; // Import the configured Apollo Client
 
 Vue.use(Vuex);
 
@@ -13,19 +14,27 @@ export const store = new Vuex.Store({
     likedUsers: [],
     users: [],
     likedUserId: null,
-    matches: [],  // Store match data
+    matches: [],
+    userPhotos: [], // Added for user photos
   },
 
   mutations: {
     setUser(state, userData) {
       state.isAuthenticated = true;
-      state.user = userData;
-      localStorage.setItem('user', JSON.stringify(userData));
+      state.user = {
+        ...userData,
+        photos: userData.photos || [],
+      };
+      localStorage.setItem('user', JSON.stringify(state.user));
       localStorage.setItem('isAuthenticated', 'true');
+    },
+    setUserPhotos(state, photos) {
+      state.userPhotos = photos;
     },
     logout(state) {
       state.isAuthenticated = false;
       state.user = null;
+      state.userPhotos = [];
       localStorage.removeItem('user');
       localStorage.removeItem('isAuthenticated');
     },
@@ -45,10 +54,10 @@ export const store = new Vuex.Store({
       state.likedUserId = likedUserId;
     },
     setMatches(state, matches) {
-      state.matches = matches;  // Set matches in the state
+      state.matches = matches;
     },
     clearMatches(state) {
-      state.matches = [];  // Clear the match data
+      state.matches = [];
     },
   },
 
@@ -79,32 +88,52 @@ export const store = new Vuex.Store({
     likeUser({ commit }, user) {
       commit('addLikedUser', user);
     },
-    moveUserToBack({ commit }, userIndex) {
-      commit('moveUserToBack', userIndex);
-    },
     setLikedUserId({ commit }, likedUserId) {
       commit('setLikedUserId', likedUserId);
     },
-    // Action to fetch and set matches based on the current user
-    async fetchMatches({ commit, state }) {
-      try {
-        if (!state.user || !state.user.id) {
-          throw new Error('User is not authenticated.');
-        }
+    async fetchUserPhotos({ commit, state }) {
+      if (!state.user?.id) return;
 
-        const { data } = await this.$apollo.query({
-          query: gql`
-            query GetMatches($userId: ID!) {
-              matches(userId: $userId) {
-                userId
-                likedUserId
-              }
+      const FETCH_USER_PHOTOS = gql`
+        query FetchUserPhotos($userId: ID!) {
+          user(id: $userId) {
+            photos {
+              id
+              url
             }
-          `,
+          }
+        }
+      `;
+
+
+      try {
+        const { data } = await apolloClient.query({
+          query: FETCH_USER_PHOTOS,
+          variables: { userId: state.user.id },
+        });
+        commit('setUserPhotos', data.user.photos);
+      } catch (error) {
+        console.error('Error fetching user photos:', error);
+      }
+    },
+    async fetchMatches({ commit, state }) {
+      if (!state.user?.id) return;
+
+      const FETCH_MATCHES = gql`
+        query GetMatches($userId: ID!) {
+          matches(userId: $userId) {
+            userId
+            likedUserId
+          }
+        }
+      `;
+
+      try {
+        const { data } = await this.$apollo.query({
+          query: FETCH_MATCHES,
           variables: { userId: state.user.id },
         });
 
-        // Process and filter matches to ensure mutual matching
         const mutualMatches = data.matches.filter((match) =>
           data.matches.some(
             (otherMatch) =>
@@ -114,12 +143,10 @@ export const store = new Vuex.Store({
         );
 
         commit('setMatches', mutualMatches);
-        console.log('Fetched matches:', mutualMatches);  // Debug log
       } catch (error) {
         console.error('Error fetching matches:', error);
       }
     },
-    // Action to clear matches from store
     clearMatches({ commit }) {
       commit('clearMatches');
     },
@@ -134,6 +161,7 @@ export const store = new Vuex.Store({
     getSkippedUsers: (state) => state.skippedUsers,
     getLikedUsers: (state) => state.likedUsers,
     getLikedUserId: (state) => state.likedUserId,
-    getMatches: (state) => state.matches,  // Return the matches state
+    getMatches: (state) => state.matches,
+    getUserPhotos: (state) => state.userPhotos, // Getter for photos
   },
 });

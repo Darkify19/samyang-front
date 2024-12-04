@@ -10,6 +10,7 @@
   "dependencies": {
     "@apollo/client": "^3.11.10",
     "apollo-upload-client": "^15.0.0",
+    "cloudinary-core": "^2.13.1",
     "core-js": "^3.8.3",
     "graphql": "^15.0.0",
     "vue": "^2.7.16",
