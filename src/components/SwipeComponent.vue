@@ -4,27 +4,29 @@
             <p>No more users to display. Please check back later!</p>
         </div>
         <div class="user-card" v-for="(user, index) in filteredUsers" :key="user.id" :style="{
-            backgroundImage: `url(${user.photos && user.photos.length ? user.photos[0].url : defaultPlaceholder})`,
+            backgroundImage: `url(${user.photos && user.photos.length ? user.photos[currentPhotoIndexes[user.id] || 0].url : defaultPlaceholder})`,
             boxShadow: index === currentCardIndex ? cardBoxShadow : '0 6px 0px rgba(0, 0, 0, 0.4)'
         }" ref="userCards" @mousedown="startSwipe(index, $event)" @touchstart="startSwipe(index, $event)">
             <div class="user-details">
                 <h3>{{ user.firstName }} {{ user.lastName }}</h3>
                 <p>{{ user.location }}</p>
                 <p>{{ user.bio }}</p>
-
                 <p class="user-gender" :class="{ 'gender-match': isGenderMatch(user.gender) }">
                     Gender: {{ user.gender }}
                 </p>
             </div>
-
+            <div class="photo-navigation">
+                <button @click.stop="prevPhoto(user.id)" :disabled="!canNavigate(user.id, -1)">◀</button>
+                <button @click.stop="nextPhoto(user.id)" :disabled="!canNavigate(user.id, 1)">▶</button>
+            </div>
         </div>
-        <!-- Floating Icons for Heart and X -->
         <div class="swipe-actions">
             <i class="fa fa-times-circle action-x"></i>
             <i class="fa fa-gratipay action-heart"></i>
         </div>
     </div>
 </template>
+
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import swipeLogic from './custom.js';
@@ -39,6 +41,8 @@ export default {
             currentCardIndex: null, // Track the index of the current card
             cardBoxShadow: '0 6px 15px rgba(0, 255, 0, 0.5)', // Default shadow for "right" swipe
             defaultPlaceholder: this.$defaultPlaceholder, // Default placehsolder image path
+            currentPhotoIndexes: {}, // Tracks current photo index for each user
+
         };
     },
     computed: {
@@ -72,7 +76,25 @@ export default {
         ...mapActions({
             setFilteredUsers: 'setFilteredUsers', // Use Vuex action to update filtered users
         }),
-
+        prevPhoto(userId) {
+            const index = this.currentPhotoIndexes[userId] || 0;
+            if (index > 0) {
+                this.$set(this.currentPhotoIndexes, userId, index - 1);
+            }
+        },
+        nextPhoto(userId) {
+            const user = this.filteredUsers.find((u) => u.id === userId);
+            const index = this.currentPhotoIndexes[userId] || 0;
+            if (user && index < user.photos.length - 1) {
+                this.$set(this.currentPhotoIndexes, userId, index + 1);
+            }
+        },
+        canNavigate(userId, direction) {
+            const user = this.filteredUsers.find((u) => u.id === userId);
+            const index = this.currentPhotoIndexes[userId] || 0;
+            if (!user || !user.photos.length) return false;
+            return direction === -1 ? index > 0 : index < user.photos.length - 1;
+        },
         async fetchUsersByGenderInterest(genderInterest) {
             if (!genderInterest) {
                 console.error("Gender interest is missing, aborting the fetch.");
@@ -217,5 +239,27 @@ export default {
 .action-x:hover,
 .action-heart:hover {
     transform: scale(1.1);
+}
+
+.photo-navigation {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    bottom: 250px;
+    width: 90%;
+}
+
+button {
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 </style>

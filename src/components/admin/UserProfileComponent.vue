@@ -3,7 +3,7 @@
         <h2>User Profile</h2>
         <div v-if="user">
             <div class="user-info">
-                <img :src="user.photos[0]?.url || $myLogo" alt="User photo" class="user-photo" />
+                <img :src="user.photos[0]?.url || $defaultPlaceholder" alt="User photo" class="user-photo" />
                 <div class="user-details">
                     <h3>{{ user.firstName }} {{ user.lastName }}</h3>
                     <p><strong>Location:</strong> {{ user.location }}</p>
@@ -16,7 +16,7 @@
                     <ul>
                         <li v-for="(match, index) in uniqueMatches" :key="match.likedUser.id || index"
                             class="match-item">
-                            <img :src="match.likedUser.photos[0]?.url || $myLogo" alt="Match photo"
+                            <img :src="match.likedUser.photos[0]?.url || $defaultPlaceholder" alt="Match photo"
                                 class="match-photo" />
                             <div class="match-details">
                                 <p>{{ match.likedUser.firstName }} {{ match.likedUser.lastName }}</p>

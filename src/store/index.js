@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { gql } from '@apollo/client/core';
 import apolloClient from '../apollo'; // Import the configured Apollo Client
+import { EventBus } from '@/eventBus';
 
 Vue.use(Vuex);
 
@@ -15,7 +16,7 @@ export const store = new Vuex.Store({
     users: [],
     likedUserId: null,
     matches: [],
-    userPhotos: [], // Added for user photos
+    userPhotos: [],
   },
 
   mutations: {
@@ -58,6 +59,11 @@ export const store = new Vuex.Store({
     },
     clearMatches(state) {
       state.matches = [];
+    },
+    replacePrimaryPhoto(state, newPhotoUrl) {
+      if (state.userPhotos.length > 0) {
+        state.userPhotos[0].url = newPhotoUrl;
+      }
     },
   },
 
@@ -105,7 +111,6 @@ export const store = new Vuex.Store({
         }
       `;
 
-
       try {
         const { data } = await apolloClient.query({
           query: FETCH_USER_PHOTOS,
@@ -129,7 +134,7 @@ export const store = new Vuex.Store({
       `;
 
       try {
-        const { data } = await this.$apollo.query({
+        const { data } = await apolloClient.query({
           query: FETCH_MATCHES,
           variables: { userId: state.user.id },
         });
@@ -150,6 +155,44 @@ export const store = new Vuex.Store({
     clearMatches({ commit }) {
       commit('clearMatches');
     },
+    async uploadPhoto({ commit, state }, { url, isPrimary = false }) {
+      const UPLOAD_PHOTO_MUTATION = gql`
+        mutation UploadPhoto($input: UploadPhotoInput!) {
+          uploadPhoto(input: $input) {
+            photo {
+              id
+              url
+            }
+            errors
+          }
+        }
+      `;
+
+      try {
+        const { data } = await apolloClient.mutate({
+          mutation: UPLOAD_PHOTO_MUTATION,
+          variables: {
+            input: { userId: state.user.id, url, isPrimary },
+          },
+        });
+
+        const { uploadPhoto } = data;
+
+        if (uploadPhoto.errors.length) {
+          EventBus.$emit('message', { type: 'error', text: uploadPhoto.errors.join(', ') });
+        } else {
+          if (isPrimary) {
+            commit('replacePrimaryPhoto', uploadPhoto.photo.url);
+          }
+          if (!state.userPhotos.find(photo => photo.url === uploadPhoto.photo.url)) {
+            state.userPhotos.push(uploadPhoto.photo);
+          }
+        }
+      } catch (error) {
+        console.error('Error uploading photo:', error);
+        EventBus.$emit('message', { type: 'error', text: 'Failed to upload photo.' });
+      }
+    },
   },
 
   getters: {
@@ -162,6 +205,6 @@ export const store = new Vuex.Store({
     getLikedUsers: (state) => state.likedUsers,
     getLikedUserId: (state) => state.likedUserId,
     getMatches: (state) => state.matches,
-    getUserPhotos: (state) => state.userPhotos, // Getter for photos
+    getUserPhotos: (state) => state.userPhotos,
   },
 });

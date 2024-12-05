@@ -13,7 +13,7 @@
             <tbody>
                 <tr v-for="user in users" :key="user.id">
                     <td>
-                        <img :src="user.photos[0]?.url || $myLogo" alt="User photo" class="user-photo" />
+                        <img :src="user.photos[0]?.url || $defaultPlaceholder" alt="User photo" class="user-photo" />
                     </td>
                     <td>{{ user.firstName }}</td>
                     <td>{{ user.lastName }}</td>
