@@ -3,6 +3,11 @@
         <h2>Your Matches</h2>
         <div v-if="matches.length > 0" class="matches-list">
             <div v-for="match in matches" :key="`${match.user.id}-${match.likedUser.id}`" class="match-card">
+                <div class="profile-container">
+                    <img v-if="match.likedUser.photos.length > 0" :src="match.likedUser.photos[0].url"
+                        alt="Profile Picture" class="profile-pic" />
+                    <img v-else src="/path/to/default-photo.jpg" alt="Default Profile Picture" class="profile-pic" />
+                </div>
                 <div class="match-info">
                     <h3>{{ match.likedUser.firstName }} {{ match.likedUser.lastName }}</h3>
                     <p>Email: {{ match.likedUser.email }}</p>
@@ -53,29 +58,33 @@ export default {
 
                 const { data } = await this.$apollo.query({
                     query: gql`
-    query GetMatches($userId: ID!) {
-      matches(userId: $userId) {
-        id
-        userId
-        likedUserId
-        user {
-          id
-          firstName
-          lastName
-          email
-          location
-          bio
-        }
-        likedUser {
-          id
-          firstName
-          lastName
-          email
-          location
-          bio
-        }
+   query GetMatches($userId: ID!) {
+  matches(userId: $userId) {
+    id
+    userId
+    likedUserId
+    user {
+      id
+      firstName
+      lastName
+      email
+      location
+      bio
+    }
+    likedUser {
+      id
+      firstName
+      lastName
+      email
+      location
+      bio
+      photos {
+        url
       }
     }
+  }
+},
+
   `, variables: { userId: this.currentUserId },
                 });
                 const uniqueMatches = [];

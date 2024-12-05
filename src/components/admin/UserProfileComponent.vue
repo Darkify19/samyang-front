@@ -31,6 +31,7 @@
     </div>
 </template>
 
+
 <script>
 import { gql } from '@apollo/client/core';
 
@@ -38,16 +39,15 @@ export default {
     data() {
         return {
             user: null, // Store user data
+            matches: [], // Store matches data
         };
     },
     computed: {
+        // Display filtered unique matches
         uniqueMatches() {
-            // Filter matches to remove duplicates and exclude the current user
-            if (!this.user || !this.user.matches) return [];
-            return this.user.matches.filter(
-                (match, index, self) =>
-                    match.likedUser.id !== this.user.id && // Exclude current user
-                    index === self.findIndex(m => m.likedUser.id === match.likedUser.id)
+            return this.matches.filter((match, index, self) =>
+                match.likedUser.id !== this.user.id && // Exclude current user
+                index === self.findIndex(m => m.likedUser.id === match.likedUser.id) // Remove duplicates
             );
         },
         hasMatches() {
@@ -68,23 +68,44 @@ export default {
                             photos {
                                 url
                             }
-                            matches {
-                                likedUser {
-                                    id
-                                    firstName
-                                    lastName
-                                    photos {
-                                        url
-                                    }
-                                }
-                            }
                         }
                     }
                 `,
                 variables: { id },
             });
             this.user = data.user;
+            this.fetchMatches(id); // Fetch matches after fetching user data
         },
+
+        async fetchMatches(userId) {
+            const { data } = await this.$apollo.query({
+                query: gql`
+                    query GetMatches($userId: ID!) {
+                        matches(userId: $userId) {
+                            user {
+                                id
+                                firstName
+                                lastName
+                                photos {
+                                    url
+                                }
+                            }
+                            likedUser {
+                                id
+                                firstName
+                                lastName
+                                photos {
+                                    url
+                                }
+                            }
+                        }
+                    }
+                `,
+                variables: { userId },
+            });
+            this.matches = data.matches;
+        },
+
         goBack() {
             this.$router.push({ name: 'userList' });
         },
@@ -95,6 +116,7 @@ export default {
     },
 };
 </script>
+
 
 <style scoped>
 .user-profile {
