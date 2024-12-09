@@ -6,7 +6,8 @@
                 <div class="profile-container">
                     <img v-if="match.likedUser.photos.length > 0" :src="match.likedUser.photos[0].url"
                         alt="Profile Picture" class="profile-pic" />
-                    <img v-else src="/path/to/default-photo.jpg" alt="Default Profile Picture" class="profile-pic" />
+                    <img v-else src="../assets/default_placeholder.png" alt="Default Profile Picture"
+                        class="profile-pic" />
                 </div>
                 <div class="match-info">
                     <h3>{{ match.likedUser.firstName }} {{ match.likedUser.lastName }}</h3>

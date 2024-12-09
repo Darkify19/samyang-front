@@ -8,10 +8,10 @@ import ProfileComponent from '@/components/ProfileComponent.vue';
 import SwipeComponent from '@/components/SwipeComponent.vue'; // Import Swipe component
 import MatchesComponent from '@/components/MatchesComponent.vue'; // Import Matches component
 import HomeView from '@/views/HomeView.vue';
-import AdminLayout from '@/components/admin/AdminLayoutComponent.vue'; // Admin Layout component
-import UserListComponent from '@/components/admin/UserListComponent.vue'; // Admin User List
-import UserProfileComponent from '@/components/admin/UserProfileComponent.vue'; // Admin User Profile
-import EditUserProfileComponent from '@/components/admin/EditUserProfileComponent.vue'; // Admin Edit User Profile
+import AdminLayout from '@/components/admin/AdminLayout.vue'; // Admin Layout component
+import UserListComponent from '@/components/admin/UserList.vue'; // Admin User List
+import UserProfileComponent from '@/components/admin/UserProfile.vue'; // Admin User Profile
+import EditUserProfileComponent from '@/components/admin/EditUserProfile.vue'; // Admin Edit User Profile
 
 Vue.use(VueRouter);
 
