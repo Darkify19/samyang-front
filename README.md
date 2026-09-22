@@ -46,12 +46,19 @@ npm run lint      # lint and autofix
 
 ## Configuration
 
-The API endpoint is selected by build mode in [`src/apollo.js`](src/apollo.js) —
-`localhost:3000` in development, the Render host in production. Point the production branch
-at your own host if you redeploy.
+Copy [`.env.example`](.env.example) to `.env.local` for development, or set the same
+variables in your host's dashboard for a deployment.
+
+| Variable | Notes |
+|---|---|
+| `VUE_APP_GRAPHQL_URI` | The samyang-back GraphQL endpoint. Defaults to `http://localhost:3000/graphql` |
+| `VUE_APP_CLOUDINARY_CLOUD_NAME` | Cloudinary account for photo uploads |
+| `VUE_APP_CLOUDINARY_UPLOAD_PRESET` | Must be an **unsigned** preset |
 
 Photo uploads go straight from the browser to Cloudinary via
-[`src/utils/cloudinaryUploader.js`](src/utils/cloudinaryUploader.js), which carries the
-cloud name and unsigned upload preset; the API only stores the resulting references.
-Uploads are capped at 5 MB and restricted to JPG/PNG with cropping enabled. Swap those
-values for your own Cloudinary account to run it end to end.
+[`src/utils/cloudinaryUploader.js`](src/utils/cloudinaryUploader.js); the API only stores
+the resulting references. Uploads are capped at 5 MB and restricted to JPG/PNG with cropping
+enabled. Both Cloudinary values fall back to the original demo account, so point them at
+your own to run it end to end.
+
+Whatever origin you serve this from must be listed in the API's `CORS_ORIGINS`.

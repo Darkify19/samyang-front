@@ -3,8 +3,8 @@ import { EventBus } from '@/eventBus';
 export function openCloudinaryWidget(onSuccessCallback) {
     const widget = window.cloudinary.createUploadWidget(
         {
-            cloudName: 'dobbqxx6w',
-            uploadPreset: 'samyangUploads',
+            cloudName: process.env.VUE_APP_CLOUDINARY_CLOUD_NAME || 'dobbqxx6w',
+            uploadPreset: process.env.VUE_APP_CLOUDINARY_UPLOAD_PRESET || 'samyangUploads',
             sources: ['local', 'url'],
             maxFileSize: 5 * 1024 * 1024, // 5 MB
             clientAllowedFormats: ['jpg', 'png'],

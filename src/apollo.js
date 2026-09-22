@@ -2,10 +2,9 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client/core';
 import createUploadLink from 'apollo-upload-client/public/createUploadLink.js'; // Updated import
 
-// Dynamically determine the GraphQL endpoint
-const graphqlUri = process.env.NODE_ENV === 'production'
-    ? 'https://test-backend-development.onrender.com/graphql'
-    : 'http://localhost:3000/graphql';
+// Endpoint comes from the environment so a redeploy is configuration rather than
+// a code change. Falls back to the local API for development. See .env.example.
+const graphqlUri = process.env.VUE_APP_GRAPHQL_URI || 'http://localhost:3000/graphql';
 
 const uploadLink = createUploadLink({
     uri: graphqlUri,
